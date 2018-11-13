@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Checklist</title>
+  </head>
+  <body>
+    <h1 style="text-align:center;">Air Supply-Pilot Order Checklist</h1>
+    <table>
+      <tr>
+ 	      <td><label>OrderID:</label></td>
+        <td><label>order_id</label></td>
+	    </tr>
+	    <tr>
+        <td><label>ItemID</label></td>
+        <td><label>Item Name</label></td>
+        <td><label>Quantity</label></td>
+      </tr>
+<!-- for n = item in the database -->
+      {% for item in order.items.all %}
+      <tr>
+        <td><label>{{item.id}}</label></td>
+        <td><label>{{item.category}}</label></td>
+        <td><label>{% for set in item.order_item_set.all %}
+                      {% if set.item_id == item.id and set.order_id == order.id%}
+                        {{set.quantities}}
+                      {% endif %}
+                    {% endfor %}
+                    </label></td>
+      </tr>
+      {% endfor %}
+    </table>
+   
+  </body>
+</html>

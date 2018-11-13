@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Description</title>
+  </head>
+  <body>
+    <h1 style="text-align:center;">Description</h1>
+      <table>
+      <tr>
+      {% load static %}
+      {% for item in item_list %}
+      <td>
+      <a href="#" onclick="window.location = location.protocol + '//' + location.host + '/clinic_manager_description/{{ user.id }}/{{ item.id }}'">
+      <img src="{% static item.image.url %}">
+      <br>
+      {{ item.category}} 
+      </a>
+      {% cycle  '</td>' '</td>' '</td></tr><tr>' %}
+
+      {% endfor %}
+      </tr>
+      </table>
+    </body>
+</html>

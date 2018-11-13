@@ -1,0 +1,36 @@
+<!doctype html>
+<html>
+    <head>
+        <title>
+            Login
+        </title>
+        {% load static %}
+        <link rel=stylesheet type="text/css" href="config.css">
+        <style type="text/css">
+            form {
+                width: 300px;
+            }
+        </style>
+        <script type="text/javascript">
+            
+
+            function login(){
+                window.location.href = '/profile/' + document.getElementById("userID").value + '/' + document.getElementById("password").value;
+            }
+        </script>
+    </head>
+    <body>
+        <Form name="myform" onsubmit="login();">
+        <div class="title">Air Supply-Pilot</div>
+        <br>
+        <p><label>UserID:</label> <input type="text" name="userID" id="userID"></p>
+        <p><label>Password:</label> <input type="password" name="password" id="password"></p>
+
+        <p>
+            <input type="button" name="forgetPassword" value="Forget Password" class="leftButton" onclick="window.location.href = 'forget_password';">
+            <input type="button" name="register" value="Register" class="leftButton" onclick="window.location.href = 'registration';">
+            <input type="button" name="submit" value="Submit" onclick="login()">
+        </p>
+        </Form>
+    </body>
+</html>

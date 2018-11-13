@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Registration</title>
+    <link rel=stylesheet type="text/css" href="config.css">
+    </head>
+    <body>
+        <form action="" method="POST">
+            <div class=title>Registration</div>
+            <p><label>UserID:</label> <input type="text" name="userID" id="userID"></p>
+            <p><label>Password:</label> <input type="password" name="password" id="password"></p>
+            <p><label>Confirmed Password:</label> <input type="password" name="confirmPassword" id="confirmPassword"></p>
+            <p><label>Token:</label> <input type="text" name="Token" id="Token"></p>
+            <p><label>Clinic (Clinic manager only):</label><select name="location">
+                {% for location in location_list %}
+                    <option value={{location.name}}>{{location.name}}</option>
+                {% endfor %}
+            </select></p>
+            <p><input type="submit" name="submit" value="Submit"></p>
+        </form>
+    </body>
+</html>

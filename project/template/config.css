@@ -1,0 +1,25 @@
+.title {
+    text-align: center;
+    font-size: 200%;
+}
+form {
+    border-style: solid;
+    border-width: 1px;
+    padding: 10px;
+    padding-bottom: 30px;
+    width: 500px;
+    margin: 100px auto;
+    
+}
+input {
+    float: right;
+    margin: 2px;
+    clear: auto;
+
+}
+p{
+    line-height: 200%
+}
+.leftButton{
+    float: left;
+}

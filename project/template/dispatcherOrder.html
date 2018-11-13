@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Dispatcher_order</title>
+  </head>
+  <body>
+    <h1 style="text-align:center;">Air Supply-Pilot Dispatcher</h1>
+    <h2 style="text-align:center;">order</h2>
+    <p align="right">
+      <input type="button" value="Print CSV File" />
+    </p>
+    <table align="center">
+      <tr>
+        <td><label>OrderID</label></td>
+        <td><label>Status</label></td>
+        <td><label>Clinic</label></td>
+        <td></td>
+      </tr>
+<!-- for pack = order in the database -->
+      {% for order in order_list %}
+      <tr>
+        <td>{{order.id}}</td>
+        <td>{{order.status}}</td>
+        <td>{{order.location.name}}</td>
+        <td><input type="button" value="Dispatched" onclick="window.location = location.protocol + '//' + location.host + '/dispatch/{{order.id}}'"></td>
+      </tr>
+      {% endfor %}
+      
+    </table>
+  </body>
+</html>

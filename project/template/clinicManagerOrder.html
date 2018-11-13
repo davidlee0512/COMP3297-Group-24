@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>ASP_clinicmanager_order_webpage</title>
+  </head>
+  <body>
+    <h1 style="text-align:center;">Order</h1>
+    <table>
+      <tr>
+        <td><label>Item : </label></td>
+        <td>
+          <select name='item' id='item'>
+            {% for item in item_list %}
+              <option value= {{item.id}}> {{item.category}}</option>
+            {% endfor %}
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td><label>quantity required: </label></td>
+        <td><input type="quantityrequired" name="quantityrequired" id="quantityrequired"></td>
+      </tr>
+    </table>
+      <button type="button" onclick="window.location = location.protocol + '//' + location.host + '/makeOrder/{{ user.id }}/' + document.getElementById('item').value
+                                                        + '/' + document.getElementById('quantityrequired').value">Submit</button>
+
+    <p><label>Item</label><label>Status</label></p>
+    <table>
+    {% for order in orders %}
+    <tr>
+      <td>{{ forloop.counter }}.</td>
+      <td>
+        <label>
+          <ol>
+            {% for item in order.items.all %}
+              <li>{{item.category}}</li>
+            {% endfor %}
+          </ol>
+        </label>
+      </td>
+      <td><label>{{order.status}}</label></td>
+      <td><input type="button" value="Cancel" onclick="window.location = location.protocol + '//' + location.host + '/deleteOrder/{{user.id}}/{{order.id}}'"></td>
+    </tr>
+    {% endfor %}
+    </table>
+  </body>
+</html>

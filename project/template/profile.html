@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Profile</title>
+
+
+  </head>
+  <body>
+  {% if correct  %}
+    <h1><center>Profile</center></h1>
+    {% if  user.userType == 'clinicManager'%}
+
+    <p>
+      <a href="#" onclick="window.location = location.protocol + '//' + location.host + '/clinic_manager_item/{{ user.id }}'">Description</a>
+       
+      <a href="#" onclick="window.location = location.protocol + '//' + location.host + '/clinic_manager_order/{{ user.id }}'">Order</a>
+    </p>
+
+    {% elif user.userType == 'warehousePersonal'%}
+
+    <p>  
+      <a href="#" onclick="window.location = location.protocol + '//' + location.host + '/warehouse_personal_order/{{ user.id }}'">Order</a>
+    </p>
+
+
+    {% elif user.userType == 'dispatcher'%}
+
+    <p>  
+      <a href="#" onclick="window.location = location.protocol + '//' + location.host + '/dispatcher_order/{{ user.id }}'">Order</a>
+    </p>
+
+
+    {% endif %}
+    <table>
+      <tr>
+        <td><label>UserID:</label></td>
+        <td><label>{{ user.userID }}</label></td>
+      </tr>
+      <tr>
+        <td><label>Password:</label></td>
+        <td><input type="text" name="password" id="password" value="{{ user.password }}"></td>
+      </tr>
+      <tr>
+        <td><label>Email address:</label></td>
+        <td><input type="email" name="email" id="email" value="{{ user.email }}"></td>
+      </tr>
+      <tr>
+        <td><label>First name:</label></td>
+        <td><input type="text" name="firstname" id="firstname" value="{{ user.first_name }}"></td>
+      </tr>
+      <tr>
+        <td><label>Last name:</label></td>
+        <td><input type="text" name="lastname" id="lastname" value="{{ user.last_name }}"></td>
+      </tr>
+      {% if  user.userType == 'clinicManager'%}
+        <tr>
+        <td><label>Clinic:</label></td>
+        <td><label>{{ user.clinic.name }}</label></td>
+      </tr>
+      {% endif %}
+    </table>
+    <button type="button"onclick="window.location = location.protocol + '//' + location.host + '/changeInfo/{{ user.id }}/' + 
+                  document.getElementById('password').value + '/' + document.getElementById('email').value + '/' + 
+                  document.getElementById('firstname').value + '/' + document.getElementById('lastname').value">Change Information</button>
+  {% else %}
+      incorrect username of password
+  {% endif %}
+  </body>
+</html>
