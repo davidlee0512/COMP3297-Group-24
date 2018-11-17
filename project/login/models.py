@@ -5,7 +5,7 @@ from django.db import models
 class Item(models.Model):
 	category = models.CharField(max_length=30)
 	description = models.CharField(max_length=50)
-	shipping_weight = models.DecimalField(max_digits=4, decimal_places=1)
+	shipping_weight = models.DecimalField(max_digits=6, decimal_places=3)
 	image = models.ImageField()
 	def __str__(self):
 		return self.category, self.description, self.shipping_weight, self.image
@@ -25,7 +25,6 @@ class Location(models.Model):
 	altitude = models.IntegerField()
 	Distance = models.ManyToManyField("self", through='Distance', through_fields=('location1', 'location2'), symmetrical=False)
 	def __str__(self):
-
 		return self.group, self.name, self.latitude, self.longitude, self.altitude
 
 class Order(models.Model):
