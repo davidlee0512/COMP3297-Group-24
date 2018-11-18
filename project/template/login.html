@@ -5,22 +5,21 @@
             Login
         </title>
         {% load static %}
-        <link rel=stylesheet type="text/css" href="config.css">
+        <link rel=stylesheet type="text/css" href="{% static 'config.css' %}">
         <style type="text/css">
             form {
                 width: 300px;
             }
         </style>
         <script type="text/javascript">
-            
-
             function login(){
                 window.location.href = '/profile/' + document.getElementById("userID").value + '/' + document.getElementById("password").value;
             }
         </script>
     </head>
     <body>
-        <Form name="myform" onsubmit="login();">
+        <form name="myform" method="post" action="/profile">
+        {% csrf_token %}
         <div class="title">Air Supply-Pilot</div>
         <br>
         <p><label>UserID:</label> <input type="text" name="userID" id="userID"></p>
@@ -29,8 +28,8 @@
         <p>
             <input type="button" name="forgetPassword" value="Forget Password" class="leftButton" onclick="window.location.href = 'forget_password';">
             <input type="button" name="register" value="Register" class="leftButton" onclick="window.location.href = 'registration';">
-            <input type="button" name="submit" value="Submit" onclick="login()">
+            <input type="submit" name="submit" value="Submit">
         </p>
-        </Form>
+        </form>
     </body>
 </html>

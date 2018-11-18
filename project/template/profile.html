@@ -7,7 +7,6 @@
 
   </head>
   <body>
-  {% if correct  %}
     <h1><center>Profile</center></h1>
     {% if  user.userType == 'clinicManager'%}
 
@@ -63,8 +62,5 @@
     <button type="button"onclick="window.location = location.protocol + '//' + location.host + '/changeInfo/{{ user.id }}/' + 
                   document.getElementById('password').value + '/' + document.getElementById('email').value + '/' + 
                   document.getElementById('firstname').value + '/' + document.getElementById('lastname').value">Change Information</button>
-  {% else %}
-      incorrect username of password
-  {% endif %}
   </body>
 </html>

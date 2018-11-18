@@ -2,7 +2,13 @@
 <html>
     <head>
         <title>Registration</title>
-    <link rel=stylesheet type="text/css" href="config.css">
+        {% load static %}
+        <link rel=stylesheet type="text/css" href="{% static 'config.css' %}">
+        <style type="text/css">
+            form {
+                width: 700px;
+            }
+        </style>
     </head>
     <body>
         <form action="" method="POST">
@@ -11,7 +17,7 @@
             <p><label>Password:</label> <input type="password" name="password" id="password"></p>
             <p><label>Confirmed Password:</label> <input type="password" name="confirmPassword" id="confirmPassword"></p>
             <p><label>Token:</label> <input type="text" name="Token" id="Token"></p>
-            <p><label>Clinic (Clinic manager only):</label><select name="location">
+            <p><label>Clinic (Clinic manager only):</label><select name="location" >
                 {% for location in location_list %}
                     <option value={{location.name}}>{{location.name}}</option>
                 {% endfor %}

@@ -1,8 +1,10 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.template import loader
+from django.urls import reverse
 from django.views.generic.list import ListView
 from login.models import *
+from login import views
 
 # Create your views here.
 
@@ -21,6 +23,11 @@ class registration(ListView):
 
     def get_queryset(self):
         return super().get_queryset().exclude(id = 1)
+
+def loginHandler(request):
+    username = request.POST['userID']
+    password = request.POST['password']
+    return HttpResponseRedirect(reverse('profile1', kwargs={'username' : username, 'password' : password}))
 
 #profile page
 class Profile(ListView):
@@ -46,6 +53,17 @@ class Profile(ListView):
         #put the data from the database to the page for render the page
         context["user"] = user
         return context
+
+    def post(self, request, *args, **kwargs):
+        username = request.POST['userID']
+        password = request.POST['password']
+
+        #get the user data from database base of username
+        user = User.objects.get(userID = username)
+
+        if (user.password == password):
+            return render(request, 'profile.html', {'user' : user})
+
 
     
 
@@ -148,7 +166,6 @@ def makeOrder(request, userid, itemid, quantity):
     order = Order()
     order.status = "Queued for Processing"
     order.location = user.clinic
-    order.combined_weights = item.shipping_weight * quantity
     order.priority = 10
 
     #save the order to database
