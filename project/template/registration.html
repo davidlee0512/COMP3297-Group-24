@@ -9,9 +9,20 @@
                 width: 700px;
             }
         </style>
+        <script>
+function validateForm() {
+    var x = document.forms["myForm"]["password"].value;
+    var y = document.forms["myForm"]["confirmPassword"].value;
+    if (x != y) {
+        alert("Password does not match");
+        return false;
+    }
+}
+</script>
     </head>
     <body>
-        <form action="" method="POST">
+       <form name="myForm" action=""
+onsubmit="return validateForm()" method="post">
             <div class=title>Registration</div>
             <p><label>UserID:</label> <input type="text" name="userID" id="userID"></p>
             <p><label>Password:</label> <input type="password" name="password" id="password"></p>
