@@ -21,7 +21,6 @@ th {
     color: white;
 }
 
-
 </style>
 
   </head>
@@ -30,22 +29,22 @@ th {
     {% if  user.userType == 'clinicManager'%}
 
     <p>
-      <a href="#" onclick="window.location = location.protocol + '//' + location.host + '/clinic_manager_item/{{ user.id }}'">Description</a>
+    <input type="button"  onclick="window.location = location.protocol + '//' + location.host + '/clinic_manager_item/{{ user.id }}'"  value="Description" >
        
-      <a href="#" onclick="window.location = location.protocol + '//' + location.host + '/clinic_manager_order/{{ user.id }}'">Order</a>
+      <input type="button" onclick="window.location = location.protocol + '//' + location.host + '/clinic_manager_order/{{ user.id }}'" value="Order">
     </p>
 
     {% elif user.userType == 'warehousePersonal'%}
 
     <p>  
-      <a href="#" onclick="window.location = location.protocol + '//' + location.host + '/warehouse_personal_order/{{ user.id }}'">Order</a>
+       <input type="button" onclick="window.location = location.protocol + '//' + location.host + '/warehouse_personal_order/{{ user.id }}'" value="Order">
     </p>
 
 
     {% elif user.userType == 'dispatcher'%}
 
     <p>  
-      <a href="#" onclick="window.location = location.protocol + '//' + location.host + '/dispatcher_order/{{ user.id }}'">Order</a>
+     <input type="button" onclick="window.location = location.protocol + '//' + location.host + '/dispatcher_order/{{ user.id }}'" value="Order">
     </p>
 
 
@@ -81,6 +80,5 @@ th {
   <p align="center">  <input type="button" value="Change Information" onclick="window.location = location.protocol + '//' + location.host + '/changeInfo/{{ user.id }}/' + 
                   document.getElementById('password').value + '/' + document.getElementById('email').value + '/' + 
                   document.getElementById('firstname').value + '/' + document.getElementById('lastname').value"></p>
-
   </body>
 </html>
