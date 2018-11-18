@@ -29,22 +29,22 @@ th {
     {% if  user.userType == 'clinicManager'%}
 
     <p>
-    <input type="button"  onclick="window.location = location.protocol + '//' + location.host + '/clinic_manager_item/{{ user.id }}'"  value="Description" >
+    <input type="button"  onclick="window.location = location.protocol + '//' + location.host + '/clinic_manager_item'"  value="Description" >
        
-      <input type="button" onclick="window.location = location.protocol + '//' + location.host + '/clinic_manager_order/{{ user.id }}'" value="Order">
+      <input type="button" onclick="window.location = location.protocol + '//' + location.host + '/clinic_manager_order'" value="Order">
     </p>
 
     {% elif user.userType == 'warehousePersonal'%}
 
     <p>  
-       <input type="button" onclick="window.location = location.protocol + '//' + location.host + '/warehouse_personal_order/{{ user.id }}'" value="Order">
+       <input type="button" onclick="window.location = location.protocol + '//' + location.host + '/warehouse_personal_order'" value="Order">
     </p>
 
 
     {% elif user.userType == 'dispatcher'%}
 
     <p>  
-     <input type="button" onclick="window.location = location.protocol + '//' + location.host + '/dispatcher_order/{{ user.id }}'" value="Order">
+     <input type="button" onclick="window.location = location.protocol + '//' + location.host + '/dispatcher_order'" value="Order">
     </p>
 
 

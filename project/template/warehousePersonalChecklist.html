@@ -29,7 +29,7 @@ th {
     <table>
       <tr>
  	      <td><label>OrderID:</label></td>
-        <td><label>order_id</label></td>
+        <td><label>{{order.id}}</label></td>
 	    </tr>
 	    <tr>
         <th><label>ItemID</label></th>
@@ -43,7 +43,7 @@ th {
         <td><label>{{item.category}}</label></td>
         <td><label>{% for set in item.order_item_set.all %}
                       {% if set.item_id == item.id and set.order_id == order.id%}
-                        {{set.quantities}}
+                        {{set.quantity}}
                       {% endif %}
                     {% endfor %}
                     </label></td>
