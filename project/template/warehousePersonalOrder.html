@@ -2,6 +2,26 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <style>
+table {
+    border-collapse: collapse;
+    width: 10%;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even){background-color: #f2f2f2}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+
+</style>
     <title>Manage_order</title>
   </head>
   <body>
@@ -9,10 +29,12 @@
     <h2 style="text-align:center;">Manage order</h2>
     <table align="center">
       <tr>
-        <td></td>
-        <td><label>Order ID</label></td>
-        <td><label>Status</label></td>
-        <td><label>Clinic</label></td>
+        <th><label>Checklist</label></th>
+        <th><label>Order ID</label></th>
+        <th><label>Status</label></th>
+        <th><label>Clinic</label></th>
+        <th></th>
+        <th></th>
       </tr>
 <!-- for n = order in the database -->
         {% for order in order_list %}
