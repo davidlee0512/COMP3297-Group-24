@@ -2,68 +2,76 @@
 <html>
   <head>
     <meta charset="utf-8">
+     <style>
+.a table {
+    border-collapse: collapse;
+    width: 10%;
+}
+
+.a th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+.a tr:nth-child(even){background-color: #f2f2f2}
+
+.a th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+
+</style>
     <title>ASP_clinicmanager_order_webpage</title>
   </head>
   <body>
     <h1 style="text-align:center;">Order</h1>
-    <table>
-      <tr>
-        <td><label>Item : </label></td>
-        <td>
-          <select name='item' id='item'>
-            {% for item in item_list %}
-              <option value= {{item.id}}> {{item.category}}</option>
-            {% endfor %}
-          </select>
-        </td>
-      </tr>
-      <tr>
-        <td><label>quantity required: </label></td>
-        <td><input type="text" name="quantityrequired" id="quantityrequired"></td>
-      </tr>
-    </table>
-    <form>
+
+    <form method="POST" action= "makeOrder">
       <table>
+        {% csrf_token %}
         <tr>
           <td>Item</td><td>Quantity</td>
         </tr>
         {% for item in item_list %}
           <tr>
             <td>{{item.category}}</td>
-            <td><input id={{item.id}}></td>
+            <td><input type="number" id = "{{item.id}}" name = "{{item.id}}" value = 0 ></td>
           </tr>
         {% endfor %}
       </table>
+      <label>priority</label>
+      <select name='priority' id='priority'>
+        <option value=1>Low</option>
+        <option value=2>Medimum</option>
+        <option value=3>High</option>
+      </select>
+      <input type="hidden" name="userid" value="{{ user.id }}">
+      <input type="submit" value="Submit">
     <form>
-      <button onclick="window.location = location.protocol + '//' + location.host + '/makeOrder/{{ user.id }}/' + document.getElementById('item').value
-                                                        + '/' + document.getElementById('quantityrequired').value">Submit</button>
 
-    <p><label>Item</label><label>Status</label></p>
-    <table>
-      <tr>
-        <td>no.</td><td>items</td><td>status</td><td>cancel order</td>
-      </tr>
-      {% for order in orders %}
-      <tr>
+    <!--<p align="center">   <button type="button" onclick="window.location = location.protocol + '//' + location.host + '/makeOrder/{{ user.id }}/' + document.getElementById('item').value
+                                                        + '/' + document.getElementById('quantityrequired').value">Submit</button> </p>-->
 
-        <td>{{ forloop.counter }}.</td>
+    <p align="center"><label>Item</label><label>Status</label></p>
+    <table align="center"  class="a">
+    {% for order in orders %}
+    <tr>
+      <td>{{ forloop.counter }}.</td>
+      <td>
+        <label>
+          <ol>
+            {% for item in order.items.all %}
+              <li>{{item.category}}</li>
+            {% endfor %}
+          </ol>
+        </label>
+      </td>
+      <td><label>{{order.status}}</label></td>
+      <td><input type="button" value="Cancel" onclick="window.location = location.protocol + '//' + location.host + '/deleteOrder/{{order.id}}'"></td>
+    </tr>
+    {% endfor %}
 
-        <td>
-          <label>
-            <ol>
-              {% for item in order.items.all %}
-                <li>{{item.category}}</li>
-              {% endfor %}
-            </ol>
-          </label>
-        </td>
-
-        <td><label>{{order.status}}</label></td>
-
-        <td><input type="button" value="Cancel" onclick="window.location = location.protocol + '//' + location.host + '/deleteOrder/{{user.id}}/{{order.id}}'"></td>
-        
-      </tr>
-      {% endfor %}
     </table>
   </body>
 </html>

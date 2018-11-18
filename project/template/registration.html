@@ -9,14 +9,27 @@
                 width: 700px;
             }
         </style>
+        <script>
+            function validateForm() {
+                var x = document.forms["myForm"]["password"].value;
+                var y = document.forms["myForm"]["confirmPassword"].value;
+                if (x != y) {
+                    alert("Password does not match");
+                    return false;
+                }
+            }
+        </script>
     </head>
     <body>
-        <form action="" method="POST">
+       <form name="myForm" action=""
+onsubmit="return validateForm()" method="post">
             <div class=title>Registration</div>
             <p><label>UserID:</label> <input type="text" name="userID" id="userID"></p>
             <p><label>Password:</label> <input type="password" name="password" id="password"></p>
             <p><label>Confirmed Password:</label> <input type="password" name="confirmPassword" id="confirmPassword"></p>
             <p><label>Token:</label> <input type="text" name="Token" id="Token"></p>
+            <p><label>First name:</label> <input type="text" name="firstName" id="firstName"></p>
+            <p><label>Last name:</label> <input type="text" name="lastName" id="lastName"></p>
             <p><label>Clinic (Clinic manager only):</label><select name="location" >
                 {% for location in location_list %}
                     <option value={{location.name}}>{{location.name}}</option>

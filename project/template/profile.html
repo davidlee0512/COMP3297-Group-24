@@ -3,7 +3,25 @@
   <head>
     <meta charset="utf-8">
     <title>Profile</title>
+<style>
+table {
+    border-collapse: collapse;
+    width: 10%;
+}
 
+th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even){background-color: #f2f2f2}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+</style>
 
   </head>
   <body>
@@ -11,27 +29,27 @@
     {% if  user.userType == 'clinicManager'%}
 
     <p>
-      <a href="#" onclick="window.location = location.protocol + '//' + location.host + '/clinic_manager_item/{{ user.id }}'">Description</a>
+    <input type="button"  onclick="window.location = location.protocol + '//' + location.host + '/clinic_manager_item'"  value="Description" >
        
-      <a href="#" onclick="window.location = location.protocol + '//' + location.host + '/clinic_manager_order/{{ user.id }}'">Order</a>
+      <input type="button" onclick="window.location = location.protocol + '//' + location.host + '/clinic_manager_order'" value="Order">
     </p>
 
     {% elif user.userType == 'warehousePersonal'%}
 
     <p>  
-      <a href="#" onclick="window.location = location.protocol + '//' + location.host + '/warehouse_personal_order/{{ user.id }}'">Order</a>
+       <input type="button" onclick="window.location = location.protocol + '//' + location.host + '/warehouse_personal_order'" value="Order">
     </p>
 
 
     {% elif user.userType == 'dispatcher'%}
 
     <p>  
-      <a href="#" onclick="window.location = location.protocol + '//' + location.host + '/dispatcher_order/{{ user.id }}'">Order</a>
+     <input type="button" onclick="window.location = location.protocol + '//' + location.host + '/dispatcher_order'" value="Order">
     </p>
 
 
     {% endif %}
-    <table>
+    <table align="center">
       <tr>
         <td><label>UserID:</label></td>
         <td><label>{{ user.userID }}</label></td>
@@ -59,8 +77,8 @@
       </tr>
       {% endif %}
     </table>
-    <button type="button"onclick="window.location = location.protocol + '//' + location.host + '/changeInfo/{{ user.id }}/' + 
+  <p align="center">  <input type="button" value="Change Information" onclick="window.location = location.protocol + '//' + location.host + '/changeInfo/{{ user.id }}/' + 
                   document.getElementById('password').value + '/' + document.getElementById('email').value + '/' + 
-                  document.getElementById('firstname').value + '/' + document.getElementById('lastname').value">Change Information</button>
+                  document.getElementById('firstname').value + '/' + document.getElementById('lastname').value"></p>
   </body>
 </html>

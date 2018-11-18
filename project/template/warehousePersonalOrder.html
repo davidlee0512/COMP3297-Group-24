@@ -2,25 +2,79 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <style>
+table {
+    border-collapse: collapse;
+    width: 10%;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even){background-color: #f2f2f2}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+
+</style>
     <title>Manage_order</title>
   </head>
   <body>
     <h1 style="text-align:center;">Air Supply-Pilot Warehouse</h1>
     <h2 style="text-align:center;">Manage order</h2>
+    <h3 style="text-align:center;">Queued for Processing</h3>
+    <table align="center">
+      <form method="POST" action="/processOrder" name="queue" id="queue">
+      {% csrf_token %}
+        <tr>
+          <th><label>Checklist</label></th>
+          <th><label>Order ID</label></th>
+          <th><label>Status</label></th>
+          <th><label>Clinic</label></th>
+          <th><label>Priority</label></th>
+          <th></th>
+          <th></th>
+        </tr>
+  <!-- for n = order in the database -->
+        {% for order in queue %}
+          <tr>
+            <td><a href="#" onclick="window.location = location.protocol + '//' + location.host + '/warehouse_personal_checklist/{{order.id}}'">checklist</a></td>
+            <td><label>{{order.id}}</label></td>
+            <td><label>{{order.status}}</label></td>
+            <td><label>{{order.location.name}}</label></td>
+            <td><label>{% if order.priority == 1 %}Low{% endif %}{% if order.priority == 2 %}Medimum{% endif %}{% if order.priority == 3 %}High{% endif %}</label></td>
+            <td><input type="submit" value="Packed" onclick="this.form.elements['orderId'].value = '{{order.id}}';"/></td>
+            <td><input type="button" value="Print shipping label" /></td>
+          </tr>
+        {% endfor %}
+        <input type="hidden" name="orderId" id="orderId" value="0">
+      </form>    
+    </table>
+
+    <h3 style="text-align:center;">Processing</h3>
     <table align="center">
       <tr>
-        <td></td>
-        <td><label>Order ID</label></td>
-        <td><label>Status</label></td>
-        <td><label>Clinic</label></td>
+        <th><label>Checklist</label></th>
+        <th><label>Order ID</label></th>
+        <th><label>Status</label></th>
+        <th><label>Clinic</label></th>
+        <th><label>Priority</label></th>
+        <th></th>
+        <th></th>
       </tr>
 <!-- for n = order in the database -->
-        {% for order in order_list %}
+        {% for order in processing %}
         <tr>
-          <td><a href="#" onclick="window.location = location.protocol + '//' + location.host + '/warehouse_personal_checklist/{{ user.id }}/{{order.id}}'">checklist</a></td>
+          <td><a href="#" onclick="window.location = location.protocol + '//' + location.host + '/warehouse_personal_checklist/{{order.id}}'">checklist</a></td>
           <td><label>{{order.id}}</label></td>
           <td><label>{{order.status}}</label></td>
           <td><label>{{order.location.name}}</label></td>
+          <td><label>{% if order.priority == 1 %}Low{% endif %}{% if order.priority == 2 %}Medimum{% endif %}{% if order.priority == 3 %}High{% endif %}</label></td>
           <td><input type="button" value="Packed" onclick="window.location = location.protocol + '//' + location.host + '/pack/{{order.id}}'"/></td>
           <td><input type="button" value="Print shipping label" /></td>
         </tr>

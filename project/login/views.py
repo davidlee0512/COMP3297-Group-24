@@ -24,10 +24,6 @@ class registration(ListView):
     def get_queryset(self):
         return super().get_queryset().exclude(id = 1)
 
-def loginHandler(request):
-    username = request.POST['userID']
-    password = request.POST['password']
-    return HttpResponseRedirect(reverse('profile1', kwargs={'username' : username, 'password' : password}))
 
 #profile page
 class Profile(ListView):
@@ -37,18 +33,8 @@ class Profile(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        #get the data form urls(done in urls.py)
-        username = self.kwargs['username'] 
-        password = self.kwargs['password']
-
-        #get the user data from database base of username
-        user = User.objects.get(userID = username)
-
-        #check the page if the username and password is correct
-        if (user.password == password):
-            context['correct'] = True
-        else:
-            context['correct'] = False
+        #get the user data from database base on cookies
+        user = User.objects.get(id = self.request.COOKIES['user'])
 
         #put the data from the database to the page for render the page
         context["user"] = user
@@ -61,8 +47,18 @@ class Profile(ListView):
         #get the user data from database base of username
         user = User.objects.get(userID = username)
 
+        #password checking
         if (user.password == password):
-            return render(request, 'profile.html', {'user' : user})
+            #correct 
+            output = render(request, 'profile.html', {'user' : user})
+            
+            output.set_cookie('user', user.id)
+
+            return output
+        else:
+            #incorrect
+            return HttpResponse('Worng userID or password')
+
 
 
     
@@ -75,7 +71,7 @@ class clinicManagerItem(ListView):
         context = super().get_context_data(**kwargs)
 
         #get the data from url(done in urls.py)
-        id_ = self.kwargs['userid']
+        id_ = self.request.COOKIES['user']
 
         #get the object for render
         context["user"] = User.objects.get(id = id_)
@@ -90,11 +86,9 @@ class clinicManagerDescription(ListView):
 
         #get the data from urls(done in urls.py)
         itemid = self.kwargs['itemid']
-        userid = self.kwargs['userid']
 
         #get the object for render
         context["item"] = Item.objects.get(id = itemid)
-        context["user"] = User.objects.get(id = userid)
         return context
     
 
@@ -107,7 +101,7 @@ class clinicManagerOrder(ListView):
         context = super().get_context_data(**kwargs)
 
         #get the data from urls(done in urls.py)
-        id_ = self.kwargs['userid']
+        id_ = self.request.COOKIES['user']
 
         #get the object for render
         context["user"] = User.objects.get(id = id_)
@@ -120,6 +114,15 @@ class warehousePersonalOrder(ListView):
 
     def get_queryset(self):
         return super().get_queryset().filter(status = 'Queued for Processing')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["queue"] = Order.objects.filter(status = 'Queued for Processing')
+        context["processing"] = Order.objects.filter(status = 'Processing by Warehouse')
+
+        return context
+
 
 class warehousePersonalChecklist(ListView):
     model = Order
@@ -142,9 +145,10 @@ class dispatcherOrder(ListView):
     def get_queryset(self):
         return super().get_queryset().filter(status = 'Queued for Dispatch')
 
-def changeProfile(request, ID, password, email, firstname, lastname):
+def changeProfile(request, password, email, firstname, lastname):
     #get the user object that need to change profile
-    user = User.objects.get(id = ID)
+    id_ = self.request.COOKIES['user']
+    user = User.objects.get(id = id_)
 
     #update the data base on the input
     user.password = password
@@ -157,38 +161,51 @@ def changeProfile(request, ID, password, email, firstname, lastname):
 
     return HttpResponse('Change Applied')
 
-def makeOrder(request, userid, itemid, quantity):
-    #get the object that for make a new order
-    item = Item.objects.get(id = itemid)
-    user = User.objects.get(id = userid)
+def makeOrder(request):
+    items = Item.objects.all()
+    user = User.objects.get(id = request.POST.get("userid"))
 
-    #create a new order object
     order = Order()
     order.status = "Queued for Processing"
+    order.priority = request.POST["priority"]
     order.location = user.clinic
-    order.priority = 10
-
-    #save the order to database
     order.save()
 
-    #create a Order_Item object (intermediate object)
-    set_ = Order_Item()
-    set_.order_id = order.id
-    set_.item_id = item.id
-    set_.quantities = quantity
+    for item in items:
+        quantity = request.POST.get(str(item.id))
 
-    #save the Order_Item object
-    set_.save()
-
+        if (quantity != '0'):
+            set_ = Order_Item()
+            set_.order_id = order.id
+            set_.item_id = item.id
+            set_.quantity = quantity
+            set_.save()
+    
     return HttpResponse('Order successful')
 
-def deleteOrder(request, userid, orderid):
+
+
+
+def deleteOrder(request, orderid):
 
     #delete the order
     order = Order.objects.get(id = orderid)
     order.delete()
 
     return HttpResponse('Order deleted')
+
+def processOrder(request):
+    #get the order object
+    orderId = request.POST["orderId"]
+    order = Order.objects.get(id = orderId)
+
+    #update the status
+    order.status = 'Processing by Warehouse'
+
+    #save the object
+    order.save()
+
+    return HttpResponseRedirect(reverse('warehouse_personal_order'))
 
 def pack(request, orderid):
     #get the order object
@@ -200,7 +217,7 @@ def pack(request, orderid):
     #save the object
     order.save()
 
-    return HttpResponse('Packed')
+    return HttpResponseRedirect(reverse('warehouse_personal_order'))
 
 def dispatch(request, orderid):
     #get the order object

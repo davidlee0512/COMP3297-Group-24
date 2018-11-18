@@ -26,22 +26,20 @@ urlpatterns = [
     path('forget_password', views.forgetPassword),
     path('registration', views.registration.as_view()),
     path('profile', views.Profile.as_view()),
-    path('profile/<str:username>/<str:password>', views.Profile.as_view()),
-    path('login', views.loginHandler),
-    path('profile1', views.Profile.as_view(), name = 'profile1'),
 
-    path('clinic_manager_item/<int:userid>', views.clinicManagerItem.as_view()),
-    path('clinic_manager_description/<int:userid>/<int:itemid>', views.clinicManagerDescription.as_view()),
-    path('clinic_manager_order/<int:userid>', views.clinicManagerOrder.as_view()),
+    path('clinic_manager_item', views.clinicManagerItem.as_view()),
+    path('clinic_manager_description/<int:itemid>', views.clinicManagerDescription.as_view()),
+    path('clinic_manager_order', views.clinicManagerOrder.as_view()),
 
-    path('warehouse_personal_order/<int:userid>', views.warehousePersonalOrder.as_view()),
-    path('warehouse_personal_checklist/<int:userid>/<int:orderid>', views.warehousePersonalChecklist.as_view()),
+    path('warehouse_personal_order', views.warehousePersonalOrder.as_view(), name = 'warehouse_personal_order'),
+    path('warehouse_personal_checklist/<int:orderid>', views.warehousePersonalChecklist.as_view()),
 
-    path('dispatcher_order/<int:userid>', views.dispatcherOrder.as_view()),
+    path('dispatcher_order', views.dispatcherOrder.as_view()),
 
     path('changeInfo/<int:ID>/<str:password>/<str:email>/<str:firstname>/<str:lastname>', views.changeProfile),
-    path('makeOrder/<int:userid>/<int:itemid>/<int:quantity>', views.makeOrder),
-    path('deleteOrder/<int:userid>/<int:orderid>', views.deleteOrder),
+    path('clinic_manager_order/makeOrder', views.makeOrder),
+    path('deleteOrder/<int:orderid>', views.deleteOrder),
+    path('processOrder', views.processOrder),
     path('pack/<int:orderid>', views.pack),
     path('dispatch/<int:orderid>', views.dispatch)
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
