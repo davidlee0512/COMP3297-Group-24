@@ -19,30 +19,51 @@
       </tr>
       <tr>
         <td><label>quantity required: </label></td>
-        <td><input type="quantityrequired" name="quantityrequired" id="quantityrequired"></td>
+        <td><input type="text" name="quantityrequired" id="quantityrequired"></td>
       </tr>
     </table>
-      <button type="button" onclick="window.location = location.protocol + '//' + location.host + '/makeOrder/{{ user.id }}/' + document.getElementById('item').value
+    <form>
+      <table>
+        <tr>
+          <td>Item</td><td>Quantity</td>
+        </tr>
+        {% for item in item_list %}
+          <tr>
+            <td>{{item.category}}</td>
+            <td><input id={{item.id}}></td>
+          </tr>
+        {% endfor %}
+      </table>
+    <form>
+      <button onclick="window.location = location.protocol + '//' + location.host + '/makeOrder/{{ user.id }}/' + document.getElementById('item').value
                                                         + '/' + document.getElementById('quantityrequired').value">Submit</button>
 
     <p><label>Item</label><label>Status</label></p>
     <table>
-    {% for order in orders %}
-    <tr>
-      <td>{{ forloop.counter }}.</td>
-      <td>
-        <label>
-          <ol>
-            {% for item in order.items.all %}
-              <li>{{item.category}}</li>
-            {% endfor %}
-          </ol>
-        </label>
-      </td>
-      <td><label>{{order.status}}</label></td>
-      <td><input type="button" value="Cancel" onclick="window.location = location.protocol + '//' + location.host + '/deleteOrder/{{user.id}}/{{order.id}}'"></td>
-    </tr>
-    {% endfor %}
+      <tr>
+        <td>no.</td><td>items</td><td>status</td><td>cancel order</td>
+      </tr>
+      {% for order in orders %}
+      <tr>
+
+        <td>{{ forloop.counter }}.</td>
+
+        <td>
+          <label>
+            <ol>
+              {% for item in order.items.all %}
+                <li>{{item.category}}</li>
+              {% endfor %}
+            </ol>
+          </label>
+        </td>
+
+        <td><label>{{order.status}}</label></td>
+
+        <td><input type="button" value="Cancel" onclick="window.location = location.protocol + '//' + location.host + '/deleteOrder/{{user.id}}/{{order.id}}'"></td>
+        
+      </tr>
+      {% endfor %}
     </table>
   </body>
 </html>

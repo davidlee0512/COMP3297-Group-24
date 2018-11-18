@@ -30,16 +30,22 @@ class Location(models.Model):
 class Order(models.Model):
 	status = models.CharField(max_length=30)
 	priority = models.IntegerField()
-	combined_weights = models.DecimalField(max_digits=4, decimal_places=1)
 	items = models.ManyToManyField(Item, through='Order_Item')
 	location = models.ForeignKey(Location, on_delete=models.CASCADE)
+	deliveredTime = models.DateTimeField(null = True)
 	def __str__(self):
 		return self.status, self.priority, self.combined_weights
+
+	def getCombinedWeight(self):
+		totalWeight = 0.0
+		for item in self.items:
+			totalWeight += item.shiping_weight * Order_Item.objects.get(item_id = item.id, order_id = self.id).quantity
+		return totalWeight
 
 class Order_Item(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    quantities = models.IntegerField()
+    quantity = models.IntegerField()
     def __str__(self):
     	return self.quantities, self.item, self.order
 
