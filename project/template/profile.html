@@ -3,7 +3,26 @@
   <head>
     <meta charset="utf-8">
     <title>Profile</title>
+<style>
+table {
+    border-collapse: collapse;
+    width: 10%;
+}
 
+th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even){background-color: #f2f2f2}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+
+</style>
 
   </head>
   <body>
@@ -32,7 +51,7 @@
 
 
     {% endif %}
-    <table>
+    <table align="center">
       <tr>
         <td><label>UserID:</label></td>
         <td><label>{{ user.userID }}</label></td>
@@ -60,9 +79,9 @@
       </tr>
       {% endif %}
     </table>
-    <button type="button"onclick="window.location = location.protocol + '//' + location.host + '/changeInfo/{{ user.id }}/' + 
+  <p align="center">  <button type="button"onclick="window.location = location.protocol + '//' + location.host + '/changeInfo/{{ user.id }}/' + 
                   document.getElementById('password').value + '/' + document.getElementById('email').value + '/' + 
-                  document.getElementById('firstname').value + '/' + document.getElementById('lastname').value">Change Information</button>
+                  document.getElementById('firstname').value + '/' + document.getElementById('lastname').value">Change Information</button></p>
   {% else %}
       incorrect username of password
   {% endif %}

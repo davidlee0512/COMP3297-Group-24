@@ -3,6 +3,26 @@
   <head>
     <meta charset="utf-8">
     <title>Checklist</title>
+    <style>
+table {
+    border-collapse: collapse;
+    width: 10%;
+}
+
+th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even){background-color: #f2f2f2}
+
+th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+
+</style>
   </head>
   <body>
     <h1 style="text-align:center;">Air Supply-Pilot Order Checklist</h1>
@@ -12,9 +32,9 @@
         <td><label>order_id</label></td>
 	    </tr>
 	    <tr>
-        <td><label>ItemID</label></td>
-        <td><label>Item Name</label></td>
-        <td><label>Quantity</label></td>
+        <th><label>ItemID</label></th>
+        <th><label>Item Name</label></th>
+        <th><label>Quantity</label></th>
       </tr>
 <!-- for n = item in the database -->
       {% for item in order.items.all %}

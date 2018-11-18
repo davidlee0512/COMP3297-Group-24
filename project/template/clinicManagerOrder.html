@@ -2,11 +2,31 @@
 <html>
   <head>
     <meta charset="utf-8">
+     <style>
+.a table {
+    border-collapse: collapse;
+    width: 10%;
+}
+
+.a th, td {
+    text-align: left;
+    padding: 8px;
+}
+
+.a tr:nth-child(even){background-color: #f2f2f2}
+
+.a th {
+    background-color: #4CAF50;
+    color: white;
+}
+
+
+</style>
     <title>ASP_clinicmanager_order_webpage</title>
   </head>
   <body>
     <h1 style="text-align:center;">Order</h1>
-    <table>
+    <table align="center">
       <tr>
         <td><label>Item : </label></td>
         <td>
@@ -22,11 +42,11 @@
         <td><input type="quantityrequired" name="quantityrequired" id="quantityrequired"></td>
       </tr>
     </table>
-      <button type="button" onclick="window.location = location.protocol + '//' + location.host + '/makeOrder/{{ user.id }}/' + document.getElementById('item').value
-                                                        + '/' + document.getElementById('quantityrequired').value">Submit</button>
+    <p align="center">   <button type="button" onclick="window.location = location.protocol + '//' + location.host + '/makeOrder/{{ user.id }}/' + document.getElementById('item').value
+                                                        + '/' + document.getElementById('quantityrequired').value">Submit</button> </p>
 
-    <p><label>Item</label><label>Status</label></p>
-    <table>
+    <p align="center"><label>Item</label><label>Status</label></p>
+    <table align="center"  class="a">
     {% for order in orders %}
     <tr>
       <td>{{ forloop.counter }}.</td>
