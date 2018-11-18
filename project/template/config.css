@@ -11,7 +11,7 @@ form {
     margin: 100px auto;
     
 }
-input {
+input, select {
     float: right;
     margin: 2px;
     clear: auto;

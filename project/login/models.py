@@ -5,7 +5,7 @@ from django.db import models
 class Item(models.Model):
 	category = models.CharField(max_length=30)
 	description = models.CharField(max_length=50)
-	shipping_weight = models.DecimalField(max_digits=4, decimal_places=1)
+	shipping_weight = models.DecimalField(max_digits=6, decimal_places=3)
 	image = models.ImageField()
 	def __str__(self):
 		return self.category, self.description, self.shipping_weight, self.image
@@ -25,22 +25,27 @@ class Location(models.Model):
 	altitude = models.IntegerField()
 	Distance = models.ManyToManyField("self", through='Distance', through_fields=('location1', 'location2'), symmetrical=False)
 	def __str__(self):
-
 		return self.group, self.name, self.latitude, self.longitude, self.altitude
 
 class Order(models.Model):
 	status = models.CharField(max_length=30)
 	priority = models.IntegerField()
-	combined_weights = models.DecimalField(max_digits=4, decimal_places=1)
 	items = models.ManyToManyField(Item, through='Order_Item')
 	location = models.ForeignKey(Location, on_delete=models.CASCADE)
+	deliveredTime = models.DateTimeField(null = True)
 	def __str__(self):
 		return self.status, self.priority, self.combined_weights
+
+	def getCombinedWeight(self):
+		totalWeight = 0.0
+		for item in self.items:
+			totalWeight += item.shiping_weight * Order_Item.objects.get(item_id = item.id, order_id = self.id).quantity
+		return totalWeight
 
 class Order_Item(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    quantities = models.IntegerField()
+    quantity = models.IntegerField()
     def __str__(self):
     	return self.quantities, self.item, self.order
 
