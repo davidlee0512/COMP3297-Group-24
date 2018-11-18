@@ -1,5 +1,7 @@
 """config URL Configuration
 
+
+
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/2.1/topics/http/urls/
 Examples:
@@ -15,13 +17,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.conf import settings
+from django.conf.urls.static import static
 from . import views
 
 urlpatterns = [
     path('', views.mainpage),
     path('forget_password', views.forgetPassword),
     path('registration', views.registration.as_view()),
+    path('profile', views.Profile.as_view()),
     path('profile/<str:username>/<str:password>', views.Profile.as_view()),
+    path('login', views.loginHandler),
+    path('profile1', views.Profile.as_view(), name = 'profile1'),
 
     path('clinic_manager_item/<int:userid>', views.clinicManagerItem.as_view()),
     path('clinic_manager_description/<int:userid>/<int:itemid>', views.clinicManagerDescription.as_view()),
@@ -37,4 +44,4 @@ urlpatterns = [
     path('deleteOrder/<int:userid>/<int:orderid>', views.deleteOrder),
     path('pack/<int:orderid>', views.pack),
     path('dispatch/<int:orderid>', views.dispatch)
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
