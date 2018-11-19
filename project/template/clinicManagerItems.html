@@ -11,7 +11,7 @@
       {% load static %}
       {% for item in item_list %}
       <td>
-      <a href="#" onclick="window.location = location.protocol + '//' + location.host + '/clinic_manager_description/{{ user.id }}/{{ item.id }}'">
+      <a href="#" onclick="window.location = location.protocol + '//' + location.host + '/clinic_manager_description/{{ item.id }}'">
       <img src="{% static item.image.url %}">
       <br>
       {{ item.category}} 

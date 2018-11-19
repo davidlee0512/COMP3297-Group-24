@@ -47,7 +47,7 @@ class Order_Item(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     quantity = models.IntegerField()
     def __str__(self):
-    	return self.quantities, self.item, self.order
+    	return self.quantity, self.item, self.order
 
 class Shipping_Lable(models.Model):
 	order = models.ForeignKey(Order, on_delete=models.CASCADE)
@@ -63,10 +63,10 @@ class User(models.Model):
 	userID = models.CharField(max_length=50)
 	password = models.CharField(max_length=20)
 	email = models.EmailField()
-	clinic = models.ForeignKey('Location', on_delete=models.CASCADE)
+	clinic = models.ForeignKey('Location', on_delete=models.CASCADE, null = True)
 	first_name = models.CharField(max_length=30)
 	last_name = models.CharField(max_length=30)
-	userType = models.CharField( max_length=10)
+	userType = models.CharField( max_length=20)
 	def __str__(self):
 		return self.password, self.email, self.clinic, self.first_name, self.last_name
 
@@ -98,3 +98,8 @@ class Pack(models.Model):
 class Packing_Queue(models.Model):
 	order = models.ForeignKey(Order, on_delete=models.CASCADE)
 	priority = models.IntegerField()
+
+class Token(models.Model):
+	token = models.CharField(max_length=6)
+	email = models.EmailField()
+	userType = models.CharField( max_length=10)
