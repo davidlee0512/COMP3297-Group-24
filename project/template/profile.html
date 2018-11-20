@@ -47,8 +47,16 @@ th {
      <input type="button" onclick="window.location = location.protocol + '//' + location.host + '/dispatcher_order'" value="Order">
     </p>
 
+    {% elif user.userType == 'admin'%}
+
+    <p>  
+     <input type="button" onclick="window.location = location.protocol + '//' + location.host + '/token'" value="token">
+    </p>
+
 
     {% endif %}
+    <form action = "/changeInfo" method="POST">
+    {% csrf_token %}
     <table align="center">
       <tr>
         <td><label>UserID:</label></td>
@@ -77,8 +85,7 @@ th {
       </tr>
       {% endif %}
     </table>
-  <p align="center">  <input type="button" value="Change Information" onclick="window.location = location.protocol + '//' + location.host + '/changeInfo/{{ user.id }}/' + 
-                  document.getElementById('password').value + '/' + document.getElementById('email').value + '/' + 
-                  document.getElementById('firstname').value + '/' + document.getElementById('lastname').value"></p>
+  <p align="center">  <input type="submit" value="Change Information"></p>
+  </form>
   </body>
 </html>

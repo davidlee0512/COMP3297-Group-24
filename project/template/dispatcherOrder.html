@@ -1,4 +1,5 @@
 <!doctype html>
+{% load tag %}
 <html>
   <head>
     <meta charset="utf-8">
@@ -28,25 +29,73 @@ th {
     <h1 style="text-align:center;">Air Supply-Pilot Dispatcher</h1>
     <h2 style="text-align:center;">order</h2>
     <p align="right">
-      <input type="button" value="Print CSV File" />
+      <form action="/autopack" method="POST">
+        <input type="submit" value="Auto pack" >
+      </form>
     </p>
+
+
+    <form>
+    {% csrf_token %}
     <table align="center">
       <tr>
+        <th></th>
         <th><label>OrderID</label></th>
         <th><label>Status</label></th>
         <th><label>Clinic</label></th>
+        <th><label>location id</label></th>
+        <th><label>Priority</label></th>
+        <th><label>Total Weight</label></th>
         <th></th>
       </tr>
 <!-- for pack = order in the database -->
       {% for order in order_list %}
       <tr>
+        <td><input type="checkbox" name="orderId[]" value="{{order.id}}"></td>
         <td>{{order.id}}</td>
         <td>{{order.status}}</td>
         <td>{{order.location.name}}</td>
+        <td>{{order.location.id}}</td>
+        <td><label>{% if order.priority == 1 %}Low{% endif %}{% if order.priority == 2 %}Medimum{% endif %}{% if order.priority == 3 %}High{% endif %}</label></td>
+        <td><label>{{ order|getCombinedWeight }}kg</label></td>
         <td><input type="button" value="Dispatched" onclick="window.location = location.protocol + '//' + location.host + '/dispatch/{{order.id}}'"></td>
       </tr>
       {% endfor %}
       
     </table>
+    <button type="submit" formaction="/chooseDispatch" formmethod="POST">chooseDispatch</button>
+    </form>
+    
+
+
+    <form method="POST" action="/createCSV">
+    {% csrf_token %}
+    <h2 style="text-align:center;">Pack</h2>
+    <table align="center">
+      <tr>
+        <th>packid</th>
+        <th>orderId</th>
+        <th></th>
+        <th></th>
+      </tr>
+      {% for pack in packs %}
+      <tr>
+        <td>{{ pack.id }}</td>
+        <td>
+          <ul>
+          {% for order in pack.order.all %}
+            <li>{{ order.id }}</li>
+          {% endfor %}
+          </ul>
+        </td>
+        <td><button type="submit" onclick="this.form.elements['packId'].value = '{{pack.id}}';">CSV</button></td>
+        <td><button type="submit" onclick="this.form.elements['packId'].value = '{{pack.id}}';" formaction="/packDispatch">dispatch</button></td>
+      </tr>
+      {% endfor %}
+    </table>
+    <input type="hidden" name="packId" id="packid" value="0">
+    </form>
+
+
   </body>
 </html>

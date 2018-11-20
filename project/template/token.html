@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+    <head>
+        <title>
+            token
+        </title>
+    </head>
+    <body>
+        <h1 style="text-align:center;">Token</h1>
+        <table>
+            <form method="POST" action="/sendToken">
+            {% csrf_token %}
+                <tr>
+                    <th>Token</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                </tr>
+                {% for token in token_list %}
+                    <tr>
+                        <td>{{token.token}}</td>
+                        <td>{{token.email}}</td>
+                        <td>{{token.userType}}</td>
+                        <td><button type="submit" onclick="this.form.elements['tokenid'].value = '{{token.id}}';">send token</button></td>
+                    </tr>
+                {% endfor %}
+                <input type="hidden" name="tokenid" id="tokenid" value="0">
+            </form>
+        </table>
+    </body>
+</html>
