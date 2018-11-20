@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'login.apps.LoginConfig'
+    'login.apps.LoginConfig',
+    'easy_pdf',
+    'login.tag.tag',
 ]
 
 MIDDLEWARE = [
@@ -64,6 +66,11 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+
+            'libraries':{
+                'tag': 'login.tag.tag',
+
+                }
         },
     },
 ]
@@ -121,3 +128,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 MEDIA_URL =  '/media/'
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'davidlee0512@gmail.com'
+EMAIL_HOST_PASSWORD = 'yimabgyqzsgpomic'
+EMAIL_PORT = 587

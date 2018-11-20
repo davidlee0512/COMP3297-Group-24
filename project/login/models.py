@@ -32,14 +32,15 @@ class Order(models.Model):
 	priority = models.IntegerField()
 	items = models.ManyToManyField(Item, through='Order_Item')
 	location = models.ForeignKey(Location, on_delete=models.CASCADE)
+	dispatchedTime = models.DateTimeField(null = True)
 	deliveredTime = models.DateTimeField(null = True)
 	def __str__(self):
-		return self.status, self.priority, self.combined_weights
+		return self.status, self.priority
 
 	def getCombinedWeight(self):
 		totalWeight = 0.0
-		for item in self.items:
-			totalWeight += item.shiping_weight * Order_Item.objects.get(item_id = item.id, order_id = self.id).quantity
+		for item in self.items.all():
+			totalWeight += float(item.shipping_weight) * Order_Item.objects.get(item_id = item.id, order_id = self.id).quantity
 		return totalWeight
 
 class Order_Item(models.Model):
@@ -56,8 +57,6 @@ class Shipping_Lable(models.Model):
 	def __str__(self):
 		return self.contents, self.final_destination
 
-class Itinerary(models.Model):
-	location = models.ForeignKey(Location, on_delete=models.CASCADE)
 
 class User(models.Model):
 	userID = models.CharField(max_length=50)
@@ -90,10 +89,8 @@ class Dispatch_Queue(models.Model):
 	order = models.ForeignKey(Order, on_delete=models.CASCADE)
 
 class Pack(models.Model):
-	order = models.ForeignKey(Order, on_delete=models.CASCADE)
-	csv = models.FileField()
-	def __str__(self):
-		return self.csv
+	order = models.ManyToManyField(Order)
+	itinerary = models.ManyToManyField(Distance)
 
 class Packing_Queue(models.Model):
 	order = models.ForeignKey(Order, on_delete=models.CASCADE)
@@ -102,4 +99,4 @@ class Packing_Queue(models.Model):
 class Token(models.Model):
 	token = models.CharField(max_length=6)
 	email = models.EmailField()
-	userType = models.CharField( max_length=10)
+	userType = models.CharField(max_length=10)

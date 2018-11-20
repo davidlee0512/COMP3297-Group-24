@@ -29,17 +29,26 @@ urlpatterns = [
 
     path('clinic_manager_item', views.clinicManagerItem.as_view()),
     path('clinic_manager_description/<int:itemid>', views.clinicManagerDescription.as_view()),
-    path('clinic_manager_order', views.clinicManagerOrder.as_view()),
+    path('clinic_manager_order', views.clinicManagerOrder.as_view(), name = 'clinic_manager_order'),
+    path('recieveOrder', views.recieveOrder),
 
     path('warehouse_personal_order', views.warehousePersonalOrder.as_view(), name = 'warehouse_personal_order'),
     path('warehouse_personal_checklist/<int:orderid>', views.warehousePersonalChecklist.as_view()),
 
-    path('dispatcher_order', views.dispatcherOrder.as_view()),
+    path('dispatcher_order', views.dispatcherOrder.as_view(), name = 'dispatcher_order'),
 
-    path('changeInfo/<int:ID>/<str:password>/<str:email>/<str:firstname>/<str:lastname>', views.changeProfile),
-    path('clinic_manager_order/makeOrder', views.makeOrder),
+    path('token', views.TokenView.as_view()),
+    path('sendToken', views.sendToken),
+
+    path('changeInfo', views.changeProfile),
+    path('makeOrder', views.makeOrder),
     path('deleteOrder/<int:orderid>', views.deleteOrder),
     path('processOrder', views.processOrder),
-    path('pack/<int:orderid>', views.pack),
-    path('dispatch/<int:orderid>', views.dispatch)
+    path('pack', views.pack),
+    path('chooseDispatch', views.chooseDispatch),
+    path('printPDF', views.printPDF),
+    path('createCSV', views.createCSV),
+    path('dispatch/<int:orderid>', views.dispatch),
+    path('packDispatch', views.packDispatch),
+    path("createAcc", views.createAcc),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
