@@ -24,6 +24,16 @@
 
 </style>
     <title>ASP_clinicmanager_order_webpage</title>
+    <script>
+      function getTotalWeight(){
+        var totalWeight = 0;
+        {% for item in item_list %}
+        totalWeight += document.getElementById("{{ item.id }}").value * {{ item.shipping_weight }};
+        {% endfor %}
+        alert (totalWeight);
+        return false;
+      }
+    </script>
   </head>
   <body>
     <h1 style="text-align:center;">Order</h1>
@@ -49,6 +59,7 @@
       </select>
       <input type="hidden" name="userid" value="{{ user.id }}">
       <input type="submit" value="Submit">
+      <input type="button" value="Get total weight" onclick="getTotalWeight()">
     <form>
 
     <!--<p align="center">   <button type="button" onclick="window.location = location.protocol + '//' + location.host + '/makeOrder/{{ user.id }}/' + document.getElementById('item').value
