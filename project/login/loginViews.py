@@ -29,14 +29,14 @@ def forgetPassword_sendtoken(request):
         return HttpResponse("No such user")
     forget_password=Forget_password()
     forget_password.user=user_
-    forget_password.token=random.randint(1,1000000)
+    forget_password.token=str(random.randint(1,1000000))
     found = True
     while (found):
         try:
             Forget_password.objects.get(token = forget_password.token)
         except forget_password.DoesNotExist:
             found = False
-        forget_password.token=random.randint(1,1000000)
+        forget_password.token=str(random.randint(1,1000000))
     forget_password.save()
     send_mail(
         'Token',
