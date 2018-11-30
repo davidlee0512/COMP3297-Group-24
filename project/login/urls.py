@@ -19,29 +19,36 @@ from django.contrib import admin
 from django.urls import include, path
 from django.conf import settings
 from django.conf.urls.static import static
-from . import views
+from . import adminViews, dispatcherViews, warehousePersonalViews, clinicManagerViews, profileViews, loginViews
 
 urlpatterns = [
-    path('', views.mainpage),
-    path('forget_password', views.forgetPassword),
-    path('registration', views.registration.as_view()),
-    path('profile', views.Profile.as_view()),
-    path('profile/<str:username>/<str:password>', views.Profile.as_view()),
-    path('login', views.loginHandler),
-    path('profile1', views.Profile.as_view(), name = 'profile1'),
+    path('', loginViews.mainpage),
+    path('forget_password', loginViews.forgetPassword),
+    path('registration', loginViews.registration.as_view()),
+    path("createAcc", loginViews.createAcc),
+    
+    path('profile', profileViews.Profile.as_view()),
+    path('changeInfo', profileViews.changeProfile),
 
-    path('clinic_manager_item/<int:userid>', views.clinicManagerItem.as_view()),
-    path('clinic_manager_description/<int:userid>/<int:itemid>', views.clinicManagerDescription.as_view()),
-    path('clinic_manager_order/<int:userid>', views.clinicManagerOrder.as_view()),
+    path('clinic_manager_item', clinicManagerViews.clinicManagerItem.as_view()),
+    path('clinic_manager_description/<int:itemid>', clinicManagerViews.clinicManagerDescription.as_view()),
+    path('clinic_manager_order', clinicManagerViews.clinicManagerOrder.as_view(), name = 'clinic_manager_order'),
+    path('recieveOrder', clinicManagerViews.recieveOrder),
+    path('makeOrder', clinicManagerViews.makeOrder),
+    path('deleteOrder/<int:orderid>', clinicManagerViews.deleteOrder),
 
-    path('warehouse_personal_order/<int:userid>', views.warehousePersonalOrder.as_view()),
-    path('warehouse_personal_checklist/<int:userid>/<int:orderid>', views.warehousePersonalChecklist.as_view()),
+    path('warehouse_personal_order', warehousePersonalViews.warehousePersonalOrder.as_view(), name = 'warehouse_personal_order'),
+    path('warehouse_personal_checklist/<int:orderid>', warehousePersonalViews.warehousePersonalChecklist.as_view()),
+    path('processOrder', warehousePersonalViews.processOrder),
+    path('pack', warehousePersonalViews.pack),
+    path('printPDF', warehousePersonalViews.printPDF),
 
-    path('dispatcher_order/<int:userid>', views.dispatcherOrder.as_view()),
+    path('dispatcher_order', dispatcherViews.dispatcherOrder.as_view(), name = 'dispatcher_order'),
+    path('chooseDispatch', dispatcherViews.chooseDispatch),
+    path('dispatch/<int:orderid>', dispatcherViews.dispatch),
+    path('packDispatch', dispatcherViews.packDispatch),
+    path('createCSV', dispatcherViews.createCSV),
 
-    path('changeInfo/<int:ID>/<str:password>/<str:email>/<str:firstname>/<str:lastname>', views.changeProfile),
-    path('makeOrder/<int:userid>/<int:itemid>/<int:quantity>', views.makeOrder),
-    path('deleteOrder/<int:userid>/<int:orderid>', views.deleteOrder),
-    path('pack/<int:orderid>', views.pack),
-    path('dispatch/<int:orderid>', views.dispatch)
+    path('token', adminViews.TokenView.as_view()),
+    path('sendToken', adminViews.sendToken),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
