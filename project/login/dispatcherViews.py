@@ -17,30 +17,41 @@ class dispatcherOrder(ListView):
     template_name = "dispatcherOrder.html"
 
     def get_queryset(self):
+        #filter out the data
         return super().get_queryset().filter(status = 'Queued for Dispatch')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        #put the pack into render
         context["packs"] = Pack.objects.all()
 
         return context
 
 def chooseDispatch(request):
+    #get the list of selected order
     choosedOrder = request.POST.getlist("orderId[]")
+
     locations = []
+
+    #create a pack object and save it
     pack = Pack()
     pack.save()
+
+    #put all the location from order into locations[]
     for orderid in choosedOrder:
         order = Order.objects.get(id = orderid)
         pack.order.add(order)
         if (order.location.id not in locations):
             locations.append(order.location.id)
 
+    #generate a route
     route = optimalRoute(locations)
 
+    #adding the QM into the end
     route.append(1)
 
+    #input the route to the pack
     for i in (range(len(route)-1)):
         itinerary = Distance.objects.get(location1_id = route[i], location2_id = route[i+1])
         pack.itinerary.add(itinerary)
@@ -66,14 +77,18 @@ def distance(fromId, toId):
     return distance.distance
         
 def packDispatch(request):
+    #get the pack 
     pack = Pack.objects.get(id = request.POST["packId"])
 
+    #change the status and add the dispatchedTime
     for order in pack.order.all():
         order.status = 'Dispatched'
         order.dispatchedTime = datetime.datetime.now()
         order.save()
 
+    #delete the pack
     pack.delete()
+
     return HttpResponseRedirect(reverse('dispatcher_order'))
 
 def dispatch(request, orderid):
@@ -93,9 +108,13 @@ def createCSV(request):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename="route.csv"'
 
+    #create a csv writer
     writer = csv.writer(response)
+
+    #get the pack object
     pack = Pack.objects.get(id = request.POST["packId"])
 
+    #add all the location into the writer 
     currentLocation = Location.objects.get(id = 1)
     nextLocation = pack.itinerary.get(location1 = currentLocation).location2
     while (nextLocation.id != 1):
@@ -103,8 +122,47 @@ def createCSV(request):
         currentLocation = nextLocation
         nextLocation = pack.itinerary.get(location1 = currentLocation).location2
 
-
+    #add QM in the end 
     source = Location.objects.get(id = 1)
     writer.writerow([source.name, source.latitude, source.longitude, source.altitude])
 
     return response
+
+def autoPack(request):
+    weightLimit = float(request.POST["weightLimit"])
+    totalWeight = 0.0
+    locations = []
+
+    orders = Order.objects.filter(status = "Queued for Dispatch").order_by("id").order_by("-priority").all()
+
+    pack = Pack()
+    pack.save()
+
+
+    for order in orders:
+        if (totalWeight + order.getCombinedWeight() <= weightLimit):
+            totalWeight += order.getCombinedWeight()
+            pack.order.add(order)
+            if (order.location.id not in locations):
+                locations.append(order.location.id)
+        else:
+            break
+    
+    #generate a route
+    route = optimalRoute(locations)
+
+    #adding the QM into the end
+    route.append(1)
+
+    #input the route to the pack
+    for i in (range(len(route)-1)):
+        itinerary = Distance.objects.get(location1_id = route[i], location2_id = route[i+1])
+        pack.itinerary.add(itinerary)
+
+    pack.save()
+    
+    return HttpResponse(pack.order.all())
+    
+
+        
+

@@ -36,7 +36,7 @@ class Order(models.Model):
 	dispatchedTime = models.DateTimeField(null = True)
 	deliveredTime = models.DateTimeField(null = True)
 	def __str__(self):
-		return self.status, self.priority
+		return str(self.id)
 
 	def getCombinedWeight(self):
 		totalWeight = 0.0
