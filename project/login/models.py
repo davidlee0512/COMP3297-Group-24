@@ -32,6 +32,7 @@ class Order(models.Model):
 	priority = models.IntegerField()
 	items = models.ManyToManyField(Item, through='Order_Item')
 	location = models.ForeignKey(Location, on_delete=models.CASCADE)
+	orderTime = models.DateTimeField(null = True)
 	dispatchedTime = models.DateTimeField(null = True)
 	deliveredTime = models.DateTimeField(null = True)
 	def __str__(self):
@@ -50,13 +51,6 @@ class Order_Item(models.Model):
     def __str__(self):
     	return self.quantity, self.item, self.order
 
-class Shipping_Lable(models.Model):
-	order = models.ForeignKey(Order, on_delete=models.CASCADE)
-	contents = models.CharField(max_length=100)
-	final_destination = models.CharField(max_length=20)
-	def __str__(self):
-		return self.contents, self.final_destination
-
 
 class User(models.Model):
 	userID = models.CharField(max_length=50)
@@ -71,30 +65,11 @@ class User(models.Model):
 
 class Forget_password(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
-
-class Dispatch_Record(models.Model):
-	order = models.ForeignKey(Order, on_delete=models.CASCADE)
-	dispatch_date_time = models.DateTimeField()
-	dispatch_weight = models.DecimalField(max_digits=4, decimal_places=1)
-	def __str__(self):
-		return self.dispatch_date_time, self.dispatch_weight
-
-class Deliver_Record(models.Model):
-	order = models.ForeignKey(Order, on_delete=models.CASCADE)
-	delivered_date_time = models.DateTimeField()
-	def __str__(self):
-		return self.delivered_date_time
-
-class Dispatch_Queue(models.Model):
-	order = models.ForeignKey(Order, on_delete=models.CASCADE)
+	token = models.CharField(max_length=6)
 
 class Pack(models.Model):
 	order = models.ManyToManyField(Order)
 	itinerary = models.ManyToManyField(Distance)
-
-class Packing_Queue(models.Model):
-	order = models.ForeignKey(Order, on_delete=models.CASCADE)
-	priority = models.IntegerField()
 
 class Token(models.Model):
 	token = models.CharField(max_length=6)
