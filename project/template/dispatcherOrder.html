@@ -30,6 +30,8 @@ th {
     <h2 style="text-align:center;">order</h2>
     <p align="right">
       <form action="/autopack" method="POST">
+        {% csrf_token %}
+        <input type="text" name="weightLimit" id="weightLimit">
         <input type="submit" value="Auto pack" >
       </form>
     </p>

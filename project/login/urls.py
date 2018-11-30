@@ -51,6 +51,7 @@ urlpatterns = [
     path('dispatch/<int:orderid>', dispatcherViews.dispatch),
     path('packDispatch', dispatcherViews.packDispatch),
     path('createCSV', dispatcherViews.createCSV),
+    path('autopack', dispatcherViews.autoPack),
 
     path('token', adminViews.TokenView.as_view()),
     path('sendToken', adminViews.sendToken),
