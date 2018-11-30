@@ -24,6 +24,7 @@ from . import adminViews, dispatcherViews, warehousePersonalViews, clinicManager
 urlpatterns = [
     path('', loginViews.mainpage),
     path('forget_password', loginViews.forgetPassword),
+    path('forget_password_token', loginViews.forgetPassword_sendtoken),
     path('reset_password', loginViews.resetPassword),
     path('registration', loginViews.registration.as_view()),
     path("createAcc", loginViews.createAcc),
