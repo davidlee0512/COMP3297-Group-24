@@ -19,6 +19,9 @@ def mainpage(request):
 
 #forget password page
 def forgetPassword(request):
+    return render(request, 'forgotPassword.html', {})
+
+def forgetPassword_sendtoken(request):
     userId = request.POST["userID"]
     try:
         user_ = User.objects.get(userID = userId)
@@ -37,6 +40,25 @@ def forgetPassword(request):
     )  
     return HttpResponse("Token sent")
 
+#reset password page
+def resetPassword(request):
+    userId = request.POST["userID"]
+    try:
+        user_ = User.objects.get(userID = userId)
+    except User.DoesNotExist:
+	return HttpResponse("No such user")
+    Forget_password=Forget_password()
+    Forget_password.user=user_
+    Forget_password.token=random.randint(1,100001)
+    Forget_password.save()
+    send_mail(
+        'Token',
+        Forget_password.token,
+        'davidlee0512@gmail.com',
+        [Forget_password.user.email],
+        fail_silently=False,
+    )  
+    return HttpResponse("Token sent")
 #registration page
 class registration(ListView):
     model = Location
