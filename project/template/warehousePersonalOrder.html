@@ -46,7 +46,9 @@ th {
         {% for order in queue %}
           <tr>
             
-            <td><a href="#" onclick="window.location = location.protocol + '//' + location.host + '/warehouse_personal_checklist/{{order.id}}'">checklist</a></td>
+            <td>
+            <button type="submit" formaction="/warehouse_personal_checklist" onclick="this.form.elements['orderId'].value = '{{order.id}}';">checklist</button>
+            </td>
             <td><label>{{order.id}}</label></td>
             <td><label>{{order.status}}</label></td>
             <td><label>{{order.location.name}}</label></td>
@@ -77,7 +79,10 @@ th {
 <!-- for n = order in the database -->
         {% for order in processing %}
         <tr>
-          <td><a href="#" onclick="window.location = location.protocol + '//' + location.host + '/warehouse_personal_checklist/{{order.id}}'">checklist</a></td>
+	<td>
+            <button type="submit" formaction="/warehouse_personal_checklist" onclick="this.form.elements['orderId'].value = '{{order.id}}';">checklist</button>
+            </td>
+        
           <td><label>{{order.id}}</label></td>
           <td><label>{{order.status}}</label></td>
           <td><label>{{order.location.name}}</label></td>
