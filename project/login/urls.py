@@ -41,7 +41,7 @@ urlpatterns = [
     path('deleteOrder/<int:orderid>', clinicManagerViews.deleteOrder),
 
     path('warehouse_personal_order', warehousePersonalViews.warehousePersonalOrder.as_view(), name = 'warehouse_personal_order'),
-    path('warehouse_personal_checklist/<int:orderid>', warehousePersonalViews.warehousePersonalChecklist.as_view()),
+    path('warehouse_personal_checklist', warehousePersonalViews.warehousePersonalChecklist.as_view()),
     path('processOrder', warehousePersonalViews.processOrder),
     path('pack', warehousePersonalViews.pack),
     path('printPDF', warehousePersonalViews.printPDF),
