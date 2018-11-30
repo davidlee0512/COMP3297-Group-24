@@ -1,4 +1,5 @@
 <!doctype html>
+{% load tag %}
 <html>
   <head>
     <meta charset="utf-8">
@@ -37,19 +38,22 @@ th {
           <th><label>Status</label></th>
           <th><label>Clinic</label></th>
           <th><label>Priority</label></th>
+          <th><label>Total Weight</label></th>
           <th></th>
           <th></th>
         </tr>
   <!-- for n = order in the database -->
         {% for order in queue %}
           <tr>
+            
             <td><a href="#" onclick="window.location = location.protocol + '//' + location.host + '/warehouse_personal_checklist/{{order.id}}'">checklist</a></td>
             <td><label>{{order.id}}</label></td>
             <td><label>{{order.status}}</label></td>
             <td><label>{{order.location.name}}</label></td>
             <td><label>{% if order.priority == 1 %}Low{% endif %}{% if order.priority == 2 %}Medimum{% endif %}{% if order.priority == 3 %}High{% endif %}</label></td>
-            <td><input type="submit" value="Packed" onclick="this.form.elements['orderId'].value = '{{order.id}}';"/></td>
-            <td><input type="button" value="Print shipping label" /></td>
+            <td><label>{{ order|getCombinedWeight }}kg</label></td>
+            <td><input type="submit" value="Process" onclick="this.form.elements['orderId'].value = '{{order.id}}';"/></td>
+            <td><button type="submit" formaction="/printPDF" onclick="this.form.elements['orderId'].value = '{{order.id}}';">Print shipping label</button></td>
           </tr>
         {% endfor %}
         <input type="hidden" name="orderId" id="orderId" value="0">
@@ -58,15 +62,18 @@ th {
 
     <h3 style="text-align:center;">Processing</h3>
     <table align="center">
-      <tr>
-        <th><label>Checklist</label></th>
-        <th><label>Order ID</label></th>
-        <th><label>Status</label></th>
-        <th><label>Clinic</label></th>
-        <th><label>Priority</label></th>
-        <th></th>
-        <th></th>
-      </tr>
+      <form method="POST" action="/pack" name="process" id="process">
+      {% csrf_token %}
+        <tr>
+          <th><label>Checklist</label></th>
+          <th><label>Order ID</label></th>
+          <th><label>Status</label></th>
+          <th><label>Clinic</label></th>
+          <th><label>Priority</label></th>
+          <th><label>Total Weight</label></th>
+          <th></th>
+          <th></th>
+        </tr>
 <!-- for n = order in the database -->
         {% for order in processing %}
         <tr>
@@ -75,10 +82,13 @@ th {
           <td><label>{{order.status}}</label></td>
           <td><label>{{order.location.name}}</label></td>
           <td><label>{% if order.priority == 1 %}Low{% endif %}{% if order.priority == 2 %}Medimum{% endif %}{% if order.priority == 3 %}High{% endif %}</label></td>
-          <td><input type="button" value="Packed" onclick="window.location = location.protocol + '//' + location.host + '/pack/{{order.id}}'"/></td>
-          <td><input type="button" value="Print shipping label" /></td>
+          <td><label>{{ order|getCombinedWeight }}kg</label></td>
+          <td><input type="submit" value="Packed" onclick="this.form.elements['orderId'].value = '{{order.id}}';"/></td>
+          <td><button type="submit" formaction="/printPDF" onclick="this.form.elements['orderId'].value = '{{order.id}}';">Print shipping label</button></td>
         </tr>
         {% endfor %}
+        <input type="hidden" name="orderId" id="orderId" value="0">
+      </form>
     </table>
   </body>
 </html>

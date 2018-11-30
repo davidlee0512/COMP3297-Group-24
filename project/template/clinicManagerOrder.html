@@ -1,4 +1,5 @@
 <!doctype html>
+{% load tag %}
 <html>
   <head>
     <meta charset="utf-8">
@@ -23,6 +24,16 @@
 
 </style>
     <title>ASP_clinicmanager_order_webpage</title>
+    <script>
+      function getTotalWeight(){
+        var totalWeight = 0;
+        {% for item in item_list %}
+        totalWeight += document.getElementById("{{ item.id }}").value * {{ item.shipping_weight }};
+        {% endfor %}
+        alert (totalWeight);
+        return false;
+      }
+    </script>
   </head>
   <body>
     <h1 style="text-align:center;">Order</h1>
@@ -36,7 +47,7 @@
         {% for item in item_list %}
           <tr>
             <td>{{item.category}}</td>
-            <td><input type="number" id = "{{item.id}}" name = "{{item.id}}" value = 0 ></td>
+            <td><input type="number" id = "{{item.id}}" name = "{{item.id}}" value = 0 min = 0></td>
           </tr>
         {% endfor %}
       </table>
@@ -48,6 +59,7 @@
       </select>
       <input type="hidden" name="userid" value="{{ user.id }}">
       <input type="submit" value="Submit">
+      <input type="button" value="Get total weight" onclick="getTotalWeight()">
     <form>
 
     <!--<p align="center">   <button type="button" onclick="window.location = location.protocol + '//' + location.host + '/makeOrder/{{ user.id }}/' + document.getElementById('item').value
@@ -55,22 +67,49 @@
 
     <p align="center"><label>Item</label><label>Status</label></p>
     <table align="center"  class="a">
+    <form>
+    {% csrf_token %}
+    <tr>
+      <th>no</th>
+      <th>Items</th>
+      <th>Status</th>
+      <th>Operation</th>
+      <th>Total Weight</th>
+    </tr>
     {% for order in orders %}
     <tr>
       <td>{{ forloop.counter }}.</td>
+
       <td>
         <label>
           <ol>
             {% for item in order.items.all %}
-              <li>{{item.category}}</li>
+              <li>{{item.category}} * {% for set in item.order_item_set.all %}
+                                        {% if set.item_id == item.id and set.order_id == order.id%}
+                                          {{set.quantity}}
+                                        {% endif %}
+                                      {% endfor %}</li>
             {% endfor %}
           </ol>
         </label>
       </td>
+
       <td><label>{{order.status}}</label></td>
+
+      {% if order.status == 'Dispatched' %}
+      <td><button type="submit" formmethod="POST" formaction="/recieveOrder" onclick="this.form.elements['orderId'].value = '{{order.id}}';">revieved</button></td>
+      {% elif order.status != 'Delivered' %}
       <td><input type="button" value="Cancel" onclick="window.location = location.protocol + '//' + location.host + '/deleteOrder/{{order.id}}'"></td>
+      {% else %}
+      <td></td>
+      {% endif %}
+
+      <td>{{ order|getCombinedWeight }}kg</td>
+
     </tr>
     {% endfor %}
+    <input type="hidden" name="orderId" id='orderId' value="0">
+    </form>
 
     </table>
   </body>
