@@ -52,7 +52,6 @@ def resetPassword(request):
 
 #reset password page
 def resetPassword_token(request):
-    userId = request.POST["userID"]
     password = request.POST["password"]
     token = request.POST["token"]
     try:
