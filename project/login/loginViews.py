@@ -52,22 +52,16 @@ def resetPassword(request):
 
 #reset password page
 def resetPassword_token(request):
-    userId = request.POST["userID"]
-    password = request.POST["password"]
+
     token = request.POST["token"]
     try:
-        token_ = Token.objects.get(token = token)
+        forget = Forget_password.objects.get(token = token)
     except Token.DoesNotExist:
         return HttpResponse("No such token")
-
-    try:
-        user_ = User.objects.get(userID = userId)
-    except User.DoesNotExist:
-        return HttpResponse("No such user")
-    user_.userID = userId
-    user_.password = password
-    user_.save()
-    token_.delete()
+    forget.user.userID = userId
+    forget.user.password = password
+    forget.user.save()
+    forget.delete()
     return HttpResponse("Password reset")
 
 #registration page
