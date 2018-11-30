@@ -58,7 +58,6 @@ def resetPassword_token(request):
         forget = Forget_password.objects.get(token = token)
     except Token.DoesNotExist:
         return HttpResponse("No such token")
-    forget.user.userID = userId
     forget.user.password = password
     forget.user.save()
     forget.delete()
