@@ -27,15 +27,22 @@ def forgetPassword_sendtoken(request):
         user_ = User.objects.get(userID = userId)
     except User.DoesNotExist:
 	return HttpResponse("No such user")
-    Forget_password=Forget_password()
-    Forget_password.user=user_
-    Forget_password.token=random.randint(1,100001)
-    Forget_password.save()
+    forget_password=Forget_password()
+    forget_password.user=user_
+    forget_password.token=random.randint(1,1000000)
+    found = True
+    while (found):
+        try:
+            Forget_password.objects.get(token = forget_password.token)
+        except forget_password.DoesNotExist:
+            found = False
+        forget_password.token=random.randint(1,1000000)
+    forget_password.save()
     send_mail(
         'Token',
-        Forget_password.token,
+        forget_password.token,
         'davidlee0512@gmail.com',
-        [Forget_password.user.email],
+        [forget_password.user.email],
         fail_silently=False,
     )  
     return HttpResponse("Token sent")
@@ -45,10 +52,10 @@ def resetPassword(request):
 
 #reset password page
 def resetPassword_token(request):
-   userId = request.POST["userID"]
-   password = request.POST["password"]
-   token = request.POST["token"]
-   try:
+    userId = request.POST["userID"]
+    password = request.POST["password"]
+    token = request.POST["token"]
+    try:
         token_ = Token.objects.get(token = token)
     except Token.DoesNotExist:
         return HttpResponse("No such token")
