@@ -43,8 +43,8 @@ class warehousePersonalChecklist(ListView):
         return context
     def post(self, request, *args, **kwargs):
         orderid = request.POST["orderId"]
-        context["order"] = Order.objects.get(id = orderid)
-        return context
+        order=Order.objects.get(id = orderid)
+        return render(request, 'warehousePersonalChecklist.html', {'order' : order})
 
 def processOrder(request):
     #get the order object
