@@ -36,11 +36,13 @@ class warehousePersonalChecklist(ListView):
         context = super().get_context_data(**kwargs)
 
         #get the data from urls(done in urls.py)
-        orderid = request.POST["orderId"]
+        orderid = self.request.POST["orderId"]
 
         #get the object for render
         context["order"] = Order.objects.get(id = orderid)
         return context
+    def post(self, request, *args, **kwargs):
+        return self.as_view(request)
 
 def processOrder(request):
     #get the order object
