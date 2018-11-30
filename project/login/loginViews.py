@@ -40,25 +40,29 @@ def forgetPassword_sendtoken(request):
     )  
     return HttpResponse("Token sent")
 
-#reset password page
 def resetPassword(request):
-    userId = request.POST["userID"]
+    return render(request, 'resetPassword.html', {})
+
+#reset password page
+def resetPassword_token(request):
+   userId = request.POST["userID"]
+   password = request.POST["password"]
+   token = request.POST["token"]
+   try:
+        token_ = Token.objects.get(token = token)
+    except Token.DoesNotExist:
+        return HttpResponse("No such token")
+
     try:
         user_ = User.objects.get(userID = userId)
     except User.DoesNotExist:
-	return HttpResponse("No such user")
-    Forget_password=Forget_password()
-    Forget_password.user=user_
-    Forget_password.token=random.randint(1,100001)
-    Forget_password.save()
-    send_mail(
-        'Token',
-        Forget_password.token,
-        'davidlee0512@gmail.com',
-        [Forget_password.user.email],
-        fail_silently=False,
-    )  
-    return HttpResponse("Token sent")
+        return HttpResponse("No such user")
+    user_.userID = userId
+    user_.password = password
+    user_.save()
+    token_.delete()
+    return HttpResponse("Password reset")
+
 #registration page
 class registration(ListView):
     model = Location
