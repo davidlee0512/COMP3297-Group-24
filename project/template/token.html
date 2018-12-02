@@ -20,11 +20,35 @@
                         <td>{{token.token}}</td>
                         <td>{{token.email}}</td>
                         <td>{{token.userType}}</td>
-                        <td><button type="submit" onclick="this.form.elements['tokenid'].value = '{{token.id}}';">send token</button></td>
+                        <td><button type="submit" onclick="this.form.elements['tokenid'].value = '{{token.id}}';">Send token</button></td>
+                        <td><button type="submit" onclick="this.form.elements['tokenid'].value = '{{token.id}}';" formaction="/deleteToken">delete Token</button></td>
                     </tr>
                 {% endfor %}
                 <input type="hidden" name="tokenid" id="tokenid" value="0">
             </form>
         </table>
+        <br>
+        <h1 style="text-align:center;">Create Token</h1>
+        <form method="POST" action="/createToken">
+        {% csrf_token %}
+            <table>   
+                <tr>
+                    <th>Email</th>
+                    <th>Role</th>
+                </tr>
+                <tr>
+                    <td><input type="email" name="email" id="email"></td>
+                    <td>
+                        <select name="role" id="role">
+                            <option value="clinicManager">clinicManager</option>
+                            <option value="warehousePersonal">warehousePersonal</option>
+                            <option value="dispatcher">dispatcher</option>
+                            <option value="admin">admin</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            <button type="submit">submit</button>
+        </form>
     </body>
 </html>

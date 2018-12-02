@@ -35,6 +35,7 @@ class Order(models.Model):
 	orderTime = models.DateTimeField(null = True)
 	dispatchedTime = models.DateTimeField(null = True)
 	deliveredTime = models.DateTimeField(null = True)
+	packed = models.BooleanField()
 	def __str__(self):
 		return str(self.id)
 

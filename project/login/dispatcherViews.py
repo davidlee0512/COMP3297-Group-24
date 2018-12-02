@@ -9,8 +9,9 @@ from login.models import *
 from login import views
 from reportlab.pdfgen import canvas
 import io, datetime, csv
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMessage
 from heapq import heappush, heappop
+from io import BytesIO
 
 class dispatcherOrder(ListView):
     model = Order
@@ -18,7 +19,7 @@ class dispatcherOrder(ListView):
 
     def get_queryset(self):
         #filter out the data
-        return super().get_queryset().filter(status = 'Queued for Dispatch')
+        return super().get_queryset().filter(status = 'Queued for Dispatch', packed = False)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -41,15 +42,14 @@ def chooseDispatch(request):
     #put all the location from order into locations[]
     for orderid in choosedOrder:
         order = Order.objects.get(id = orderid)
+        order.packed = True
+        order.save()
         pack.order.add(order)
         if (order.location.id not in locations):
             locations.append(order.location.id)
 
     #generate a route
     route = optimalRoute(locations)
-
-    #adding the QM into the end
-    route.append(1)
 
     #input the route to the pack
     for i in (range(len(route)-1)):
@@ -58,7 +58,7 @@ def chooseDispatch(request):
 
     pack.save()
     
-    return HttpResponse(route)
+    return HttpResponseRedirect(reverse('dispatcher_order'))
     
 def optimalRoute(locations):
     frontier = []
@@ -66,11 +66,28 @@ def optimalRoute(locations):
     while (frontier):
         node = heappop(frontier)
         remain = [x for x in locations if x not in node[1]]
-        if remain:
-            for next in remain:
-                heappush(frontier, (node[0]+distance(node[1][-1],next), node[1]+[next]))
+        print(node)
+        print(frontier)
+        print(remain)
+        if (not isGoal(locations, node)):
+            if remain:
+                for next in remain:
+                    heappush(frontier, (node[0]+distance(node[1][-1] ,next), node[1]+[next]))
+            else:
+                heappush(frontier, (node[0]+distance(node[1][-1], 1), node[1]+[1]))
         else:
+            print (node[1])
             return node[1]
+
+def isGoal(locations, node):
+    for location in locations:
+        if (location not in node[1]):
+            return False
+            
+    if (1 != node[1][-1]):
+        return False
+
+    return True
 
 def distance(fromId, toId):
     distance = Distance.objects.get(location1_id = fromId, location2_id = toId)
@@ -86,21 +103,41 @@ def packDispatch(request):
         order.dispatchedTime = datetime.datetime.now()
         order.save()
 
+        #create pdf
+        currentLine = 750
+        buffer = BytesIO()
+        p = canvas.Canvas(buffer)
+        p.drawString(100, currentLine, "OrderID: " + str(order.id))
+        currentLine -= 50
+        p.drawString(100, currentLine, "Priority: " + str(order.priority))
+        currentLine -= 50
+        p.drawString(100, currentLine, "Location: " + str(order.location.name))
+        currentLine -= 50
+        p.drawString(100, currentLine, "Items: ")
+        currentLine -= 50
+
+        for item in order.items.all():
+            set_ = Order_Item.objects.get(order_id = order.id, item_id = item.id)
+            p.drawString(150, currentLine, item.category + ": " + str(set_.quantity))
+            currentLine -= 50
+
+        p.showPage()
+        p.save()
+
+        pdf = buffer.getvalue()
+        buffer.close()
+
+        receivers = User.objects.filter(userType = "clinicManager", clinic = order.location)
+        msg = EmailMessage("Your Order is on the way", "", to=[user.email for user in receivers])
+        msg.attach('label.pdf', pdf, 'application/pdf')
+        msg.content_subtype = "html"
+        msg.send()
+
+
+
     #delete the pack
     pack.delete()
 
-    return HttpResponseRedirect(reverse('dispatcher_order'))
-
-def dispatch(request, orderid):
-    #get the order object
-    order = Order.objects.get(id = orderid)
-
-    #update the status
-    order.status = 'Dispatched'
-    order.dispatchedTime = datetime.datetime.now()
-
-    #save the object
-    order.save()
     return HttpResponseRedirect(reverse('dispatcher_order'))
 
 def createCSV(request):
@@ -132,17 +169,20 @@ def autoPack(request):
     weightLimit = float(request.POST["weightLimit"])
     totalWeight = 0.0
     locations = []
+    containerWeight = 2.0
 
-    orders = Order.objects.filter(status = "Queued for Dispatch").order_by("id").order_by("-priority").all()
+    orders = Order.objects.filter(status = "Queued for Dispatch", packed = False).order_by("id").order_by("-priority").all()
 
     pack = Pack()
     pack.save()
 
 
     for order in orders:
-        if (totalWeight + order.getCombinedWeight() <= weightLimit):
-            totalWeight += order.getCombinedWeight()
+        if (totalWeight + (order.getCombinedWeight() + containerWeight) <= weightLimit):
+            totalWeight += (order.getCombinedWeight( + containerWeight))
             pack.order.add(order)
+            order.packed = True
+            order.save()
             if (order.location.id not in locations):
                 locations.append(order.location.id)
         else:
@@ -151,9 +191,6 @@ def autoPack(request):
     #generate a route
     route = optimalRoute(locations)
 
-    #adding the QM into the end
-    route.append(1)
-
     #input the route to the pack
     for i in (range(len(route)-1)):
         itinerary = Distance.objects.get(location1_id = route[i], location2_id = route[i+1])
@@ -161,7 +198,7 @@ def autoPack(request):
 
     pack.save()
     
-    return HttpResponse(pack.order.all())
+    return HttpResponseRedirect(reverse('dispatcher_order'))
     
 
         
