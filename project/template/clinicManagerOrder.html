@@ -98,6 +98,8 @@
 
       {% if order.status == 'Dispatched' %}
       <td><button type="submit" formmethod="POST" formaction="/recieveOrder" onclick="this.form.elements['orderId'].value = '{{order.id}}';">revieved</button></td>
+      {% elif order-Status == 'Queued for Dispatch' %}
+      <td></td>
       {% else %}
       <td><input type="button" value="Cancel" onclick="window.location = location.protocol + '//' + location.host + '/deleteOrder/{{order.id}}'"></td>
       {% endif %}
