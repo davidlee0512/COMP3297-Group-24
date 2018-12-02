@@ -44,7 +44,7 @@ class Profile(ListView):
             return output
         else:
             #incorrect
-            return HttpResponse('Worng userID or password')
+            return HttpResponse('Wrong userID or password')
 
 #change profile
 def changeProfile(request):
@@ -55,8 +55,8 @@ def changeProfile(request):
     #update the data base on the input
     user.password = request.POST["password"]
     user.email = request.POST["email"]
-    user.firstname = request.POST["firstname"]
-    user.lastname = request.POST["lastname"]
+    user.first_name = request.POST["firstname"]
+    user.last_name = request.POST["lastname"]
 
     #update the database
     user.save()
