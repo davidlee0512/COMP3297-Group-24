@@ -48,11 +48,12 @@ urlpatterns = [
 
     path('dispatcher_order', dispatcherViews.dispatcherOrder.as_view(), name = 'dispatcher_order'),
     path('chooseDispatch', dispatcherViews.chooseDispatch),
-    path('dispatch/<int:orderid>', dispatcherViews.dispatch),
     path('packDispatch', dispatcherViews.packDispatch),
     path('createCSV', dispatcherViews.createCSV),
     path('autopack', dispatcherViews.autoPack),
 
-    path('token', adminViews.TokenView.as_view()),
+    path('token', adminViews.TokenView.as_view(), name="token"),
     path('sendToken', adminViews.sendToken),
+    path('createToken', adminViews.createToken),
+    path('deleteToken', adminViews.deleteToken)
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

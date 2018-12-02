@@ -54,7 +54,7 @@ class clinicManagerOrder(ListView):
 
         #get the object for render
         context["user"] = User.objects.get(id = id_)
-        context["orders"] = Order.objects.filter(location = context["user"].clinic)
+        context["orders"] = Order.objects.filter(location = context["user"].clinic).exclude(status = 'Delivered')
 
         return context
 
@@ -70,6 +70,7 @@ def recieveOrder(request):
     return HttpResponseRedirect(reverse('clinic_manager_order'))
 
 def makeOrder(request):
+    weightLimit = 25.0
     items = Item.objects.all()
     user = User.objects.get(id = request.POST.get("userid"))
 
@@ -77,6 +78,8 @@ def makeOrder(request):
     order.status = "Queued for Processing"
     order.priority = request.POST["priority"]
     order.location = user.clinic
+    order.packed = False
+    order.orderTime = datetime.datetime.now()
     order.save()
 
     totalNo = 0
@@ -86,7 +89,7 @@ def makeOrder(request):
 
     if (totalNo == 0):
         order.delete()
-        return HttpResponse("please input a valid number")
+        return HttpResponse("Total number cannot be zero")
 
     for item in items:
         quantity = request.POST.get(str(item.id))
@@ -97,6 +100,10 @@ def makeOrder(request):
             set_.item_id = item.id
             set_.quantity = quantity
             set_.save()
+
+    if (order.getCombinedWeight > weightLimit):
+        order.delete()
+        return HttpResponse("OverWeight")
     
     return HttpResponseRedirect(reverse("clinic_manager_order"))
 
@@ -106,4 +113,4 @@ def deleteOrder(request, orderid):
     order = Order.objects.get(id = orderid)
     order.delete()
 
-    return HttpResponse('Order deleted')
+    return HttpResponseRedirect(reverse("clinic_manager_order"))

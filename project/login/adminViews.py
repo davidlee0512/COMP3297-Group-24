@@ -11,6 +11,7 @@ from reportlab.pdfgen import canvas
 import io, datetime, csv
 from django.core.mail import send_mail
 from heapq import heappush, heappop
+import random, string
 
 class TokenView(ListView):
     model = Token
@@ -21,10 +22,33 @@ def sendToken(request):
     token = Token.objects.get(id = tokenid)
 
     send_mail(
-        'Token',
-        token.token,
+        'Token for registration',
+        "Token: " + token.token + "\n" +
+        "You can use this link to registrate :" + "http://25.44.234.76:8000/registration?token=" + token.token + "",
         'davidlee0512@gmail.com',
         [token.email],
         fail_silently=False,
     )
-    return HttpResponse("sent")
+    return HttpResponseRedirect(reverse("token"))
+
+def createToken(request):
+    token = Token()
+    token.email = request.POST["email"]
+    token.userType = request.POST["role"]
+    token.token = ''.join(random.choices(string.digits, k=6))
+    found = True
+    while (found):
+        try:
+            Token.objects.get(token = token.token)
+        except Token.DoesNotExist:
+            found = False
+            token.token=''.join(random.choices(string.digits, k=6))
+
+    token.save()
+    return HttpResponseRedirect(reverse("token"))
+
+def deleteToken(request):
+    token = Token.objects.get(id = request.POST['tokenid'])
+    token.delete()
+
+    return HttpResponseRedirect(reverse("token"))

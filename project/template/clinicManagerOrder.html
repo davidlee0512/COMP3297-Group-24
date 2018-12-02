@@ -54,7 +54,7 @@
       <label>priority</label>
       <select name='priority' id='priority'>
         <option value=1>Low</option>
-        <option value=2>Medimum</option>
+        <option value=2>Medium</option>
         <option value=3>High</option>
       </select>
       <input type="hidden" name="userid" value="{{ user.id }}">
@@ -98,10 +98,8 @@
 
       {% if order.status == 'Dispatched' %}
       <td><button type="submit" formmethod="POST" formaction="/recieveOrder" onclick="this.form.elements['orderId'].value = '{{order.id}}';">revieved</button></td>
-      {% elif order.status != 'Delivered' %}
-      <td><input type="button" value="Cancel" onclick="window.location = location.protocol + '//' + location.host + '/deleteOrder/{{order.id}}'"></td>
       {% else %}
-      <td></td>
+      <td><input type="button" value="Cancel" onclick="window.location = location.protocol + '//' + location.host + '/deleteOrder/{{order.id}}'"></td>
       {% endif %}
 
       <td>{{ order|getCombinedWeight }}kg</td>

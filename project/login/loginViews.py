@@ -9,9 +9,10 @@ from login.models import *
 from login import views
 from reportlab.pdfgen import canvas
 import io, datetime, csv
-import random
+import random, string
 from django.core.mail import send_mail
 from heapq import heappush, heappop
+from django.utils.datastructures import MultiValueDictKeyError
 
 #login page
 def mainpage(request):
@@ -29,18 +30,19 @@ def forgetPassword_sendtoken(request):
         return HttpResponse("No such user")
     forget_password=Forget_password()
     forget_password.user=user_
-    forget_password.token=str(random.randint(1,1000000))
+    forget_password.token=''.join(random.choices(string.digits, k=6))
     found = True
     while (found):
         try:
             Forget_password.objects.get(token = forget_password.token)
-        except forget_password.DoesNotExist:
+        except Forget_password.DoesNotExist:
             found = False
-        forget_password.token=str(random.randint(1,1000000))
+        forget_password.token=''.join(random.choices(string.digits, k=6))
     forget_password.save()
     send_mail(
-        'Token',
-        forget_password.token,
+        'Token for reset password',
+        "Use this token to reset your password\n" + forget_password.token + "\n" + 
+        "You can also use this link to registrate :" + "http://25.44.234.76:8000/reset_password?token=" + forget_password.token + "",
         'davidlee0512@gmail.com',
         [forget_password.user.email],
         fail_silently=False,
@@ -48,7 +50,11 @@ def forgetPassword_sendtoken(request):
     return HttpResponse("Token sent")
 
 def resetPassword(request):
-    return render(request, 'resetPassword.html', {})
+    try:
+        token = request.GET["token"]
+    except MultiValueDictKeyError:
+        return render(request, 'resetPassword.html', {})
+    return render(request, 'resetPassword.html', {"token": token})
 
 #reset password page
 def resetPassword_token(request):
@@ -70,6 +76,13 @@ class registration(ListView):
 
     def get_queryset(self):
         return super().get_queryset().exclude(id = 1)
+
+    def get(self, request):
+        try:
+            token = request.GET["token"]
+        except MultiValueDictKeyError:
+            return super().get(request)
+        return render(request, "registration.html", {"token": token,"location_list": self.get_queryset() })
 
 #create account by POST
 def createAcc(request):

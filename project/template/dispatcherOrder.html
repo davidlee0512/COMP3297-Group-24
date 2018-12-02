@@ -48,7 +48,6 @@ th {
         <th><label>location id</label></th>
         <th><label>Priority</label></th>
         <th><label>Total Weight</label></th>
-        <th></th>
       </tr>
 <!-- for pack = order in the database -->
       {% for order in order_list %}
@@ -58,9 +57,8 @@ th {
         <td>{{order.status}}</td>
         <td>{{order.location.name}}</td>
         <td>{{order.location.id}}</td>
-        <td><label>{% if order.priority == 1 %}Low{% endif %}{% if order.priority == 2 %}Medimum{% endif %}{% if order.priority == 3 %}High{% endif %}</label></td>
+        <td><label>{% if order.priority == 1 %}Low{% endif %}{% if order.priority == 2 %}Medium{% endif %}{% if order.priority == 3 %}High{% endif %}</label></td>
         <td><label>{{ order|getCombinedWeight }}kg</label></td>
-        <td><input type="button" value="Dispatched" onclick="window.location = location.protocol + '//' + location.host + '/dispatch/{{order.id}}'"></td>
       </tr>
       {% endfor %}
       

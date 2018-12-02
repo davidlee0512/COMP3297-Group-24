@@ -52,7 +52,7 @@ th {
             <td><label>{{order.id}}</label></td>
             <td><label>{{order.status}}</label></td>
             <td><label>{{order.location.name}}</label></td>
-            <td><label>{% if order.priority == 1 %}Low{% endif %}{% if order.priority == 2 %}Medimum{% endif %}{% if order.priority == 3 %}High{% endif %}</label></td>
+            <td><label>{% if order.priority == 1 %}Low{% endif %}{% if order.priority == 2 %}Medium{% endif %}{% if order.priority == 3 %}High{% endif %}</label></td>
             <td><label>{{ order|getCombinedWeight }}kg</label></td>
             <td><input type="submit" value="Process" onclick="this.form.elements['orderId'].value = '{{order.id}}';"/></td>
             <td><button type="submit" formaction="/printPDF" onclick="this.form.elements['orderId'].value = '{{order.id}}';">Print shipping label</button></td>
